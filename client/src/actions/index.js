@@ -35,5 +35,5 @@ export const destroyEnemySpot = (row, col) => {
 
 // {
 //   gameState: 'Battle' || 'BeginGame',
-//   board: [[{piece: 'ACC1', pos: 'horizontal', hit: false}, {piece: 'ACC2', hit: false}]]
+//   playerBoard: [[{piece: 'ACC1', pos: 'horizontal', hit: false}, {piece: 'ACC2', hit: false}]]
 // }

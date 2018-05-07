@@ -25,7 +25,7 @@ const createBoard = () => {
   return initialBoard;
 }
 
-const initalState = {
+const initialState = {
   gameState: 'BeginGame',
   playerBoard: createBoard(),
   enemyBoard: createBoard()
@@ -33,7 +33,7 @@ const initalState = {
 
 function gameLogic (state = initialState, action) {
   switch (action.type) {
-    case ADD_SHIP:
+    case actions.ADD_SHIP:
       return Object.assign({}, state, {
         playerBoard:  state.playerBoard.map((row, rowIdx) => {
           return row.map((ship, colIdx) => {
@@ -48,7 +48,7 @@ function gameLogic (state = initialState, action) {
           })
         })
       })
-    case DESTROY_SPOT:
+    case actions.DESTROY_SPOT:
       return Object.assign({}, state, {
         enemyBoard: state.enemyBoard.map((row, rowIdx) => {
           return row.map((ship, colIdx) => {
@@ -61,11 +61,13 @@ function gameLogic (state = initialState, action) {
           })
         })
       })  
+    default: return state  
   }
 }
 
 const BattleshipApp = combineReducers({
-  gameStatus
+  gameStatus, 
+  gameLogic
 });
 
 
