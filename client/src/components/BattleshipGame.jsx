@@ -9,8 +9,8 @@ const BattleshipGame = () => (
       <div id="enemyFleet">enemyFleet</div>
       <div id="playerName">Jarrod</div>
       <div id="enemyName">Computer</div>
-      <VisibleBoard className="playerBoard" />
-      <VisibleBoard className="enemyBoard" />
+      <VisibleBoard className="playerBoard" boardType="playerBoard"/>
+      <VisibleBoard className="enemyBoard" boardType="enemyBoard"/>
       <Footer className="footer" />   
     </div>
   )

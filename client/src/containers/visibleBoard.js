@@ -9,7 +9,8 @@ const getVisibleBoard = (board, boardType) => {
 const mapStateToProps = state => {
   console.log('state', state);
   return {
-    board: state.gameLogic.playerBoard,
+    playerBoard: state.gameLogic.playerBoard,
+    enemyBoard: state.gameLogic.enemyBoard,
     selectedPiece: state.gameLogic.selectedPiece,
     selectedPos: state.gameLogic.selectedPosition
   }

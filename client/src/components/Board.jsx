@@ -4,7 +4,7 @@ const rows = ['A','B','C','D','E','F','G','H','I','J']
 const columns = [1,2,3,4,5,6,7,8,9,10];
 
 const Board = (props) => {
-  console.log('props', props)
+  const board = props.boardType === 'playerBoard' ? props.playerBoard : props.enemyBoard;
   return (
   <div className={props.className}>
     <table>
@@ -21,13 +21,19 @@ const Board = (props) => {
         <th>9</th>
         <th>10</th>
       </tr> 
-      {props.board.map( (row, rowIdx) => {
+      {board.map( (row, rowIdx) => {
         return <tr> <th className="boardOuter">{rows[rowIdx]}</th>
         {columns.map((col, colIdx) => {
           return <td
           className="boardCell"
-          onClick={ () => props.addShip(props.selectedPiece, props.selectedPos, rowIdx, colIdx)}>
-          {props.board[rowIdx][colIdx].piece}
+          onClick={ 
+            props.boardType === 'playerBoard' ? () => props.addShip(props.selectedPiece, props.selectedPos, rowIdx, colIdx)
+            : () => console.log('enemyBoardClicked')
+          }>
+          {props.boardType === 'playerBoard' ? 
+            !board[rowIdx][colIdx].hit && board[rowIdx][colIdx].piece !== 'E' ? board[rowIdx][colIdx].piece : ''
+            : !board[rowIdx][colIdx].hit ? '' : 'HIT'
+          }
           </td>
         })}</tr>
       })}   
