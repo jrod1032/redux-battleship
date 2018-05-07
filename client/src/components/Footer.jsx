@@ -10,6 +10,7 @@ const Footer = (props) => (
     <ShipButton name="S" />
     <ShipButton name="D" />
     <PositionButton name="horizontal" />
+    <PositionButton name="vertical" />
   </div>  
   )
 

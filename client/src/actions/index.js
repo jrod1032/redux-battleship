@@ -35,7 +35,6 @@ export const selectPosition = (position) => {
 export const destroyEnemySpot = (row, col) => {
   return {
     type: DESTROY_SPOT,
-    board: enemyBoard,
     row,
     col
   }

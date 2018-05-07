@@ -28,11 +28,11 @@ const Board = (props) => {
           className="boardCell"
           onClick={ 
             props.boardType === 'playerBoard' ? () => props.addShip(props.selectedPiece, props.selectedPos, rowIdx, colIdx)
-            : () => console.log('enemyBoardClicked')
+            : () => props.destroyEnemySpot(rowIdx, colIdx)
           }>
           {props.boardType === 'playerBoard' ? 
             !board[rowIdx][colIdx].hit && board[rowIdx][colIdx].piece !== 'E' ? board[rowIdx][colIdx].piece : ''
-            : !board[rowIdx][colIdx].hit ? '' : 'HIT'
+            : !board[rowIdx][colIdx].hit ? '' : board[rowIdx][colIdx].piece
           }
           </td>
         })}</tr>

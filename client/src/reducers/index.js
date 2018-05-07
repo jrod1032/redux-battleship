@@ -9,7 +9,7 @@ function gameStatus(state = 'pregame', action) {
 }
 
 const initialState = {
-  gameState: 'BeginGame',
+  gamePhase: 'BeginGame',
   selectedPiece:'ACC',
   selectedPosition: 'vertical',
   playerBoard: helpers.createBoard(),
@@ -22,6 +22,14 @@ function gameLogic (state = initialState, action) {
       return Object.assign({}, state, {
           playerBoard: helpers.getNewBoard(state.playerBoard, action)
       })
+    case actions.SELECT_SHIP:
+      return Object.assign({}, state, {
+        selectedPiece: action.piece
+      })    
+    case actions.SELECT_POSITION: 
+      return Object.assign({}, state, {
+        selectedPosition: action.position
+      })  
     case actions.DESTROY_SPOT:
       return Object.assign({}, state, {
         enemyBoard: state.enemyBoard.map((row, rowIdx) => {
@@ -34,22 +42,22 @@ function gameLogic (state = initialState, action) {
             return ship;
           })
         })
-      })
-    case actions.SELECT_SHIP:
-      return Object.assign({}, state, {
-        selectedPiece: action.piece
-      })    
-    case actions.SELECT_POSITION: 
-      return Object.assign({}, state, {
-        selectedPosition: action.position
       })  
     default: return state  
   }
 }
 
+function battleState (state = initialState, action) {
+  switch(action.type) {
+
+    default: return state;  
+  }
+}
+
 const BattleshipApp = combineReducers({
   gameStatus, 
-  gameLogic
+  gameLogic,
+  battleState
 });
 
 
