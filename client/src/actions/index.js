@@ -5,6 +5,7 @@ export const DESTROY_SPOT = 'DESTROY_SPOT';
 export const CHOOSE_SHIP = 'CHOOSE_SHIP';
 export const ADD_SCORE = 'ADD_SCORE';
 export const SELECT_SHIP = 'SELECT_SHIP';
+export const SELECT_POSITION = 'SELECT_POSITION';
 
 export const addShip = (selectedShip, selectedPosition, row, col) => {
   return {
@@ -16,10 +17,18 @@ export const addShip = (selectedShip, selectedPosition, row, col) => {
   }
 }
 
-export const selectShip = (piece) => {
+export const selectShip = (piece, position="vertical") => {
   return {
     type: SELECT_SHIP,
     piece,
+    position
+  }
+}
+
+export const selectPosition = (position) => {
+  return {
+    type: SELECT_POSITION,
+    position
   }
 }
 

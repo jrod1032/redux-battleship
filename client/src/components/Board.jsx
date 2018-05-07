@@ -26,7 +26,8 @@ const Board = (props) => {
         {columns.map((col, colIdx) => {
           return <td
           className="boardCell"
-          onClick={ () => props.addShip(props.selectedShip, props.selectedPos, rowIdx, colIdx)}>{props.board[rowIdx][colIdx].piece}
+          onClick={ () => props.addShip(props.selectedPiece, props.selectedPos, rowIdx, colIdx)}>
+          {props.board[rowIdx][colIdx].piece}
           </td>
         })}</tr>
       })}   

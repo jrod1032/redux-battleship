@@ -9,15 +9,15 @@ const getVisibleBoard = (board, boardType) => {
 const mapStateToProps = state => {
   console.log('state', state);
   return {
-    board: getVisibleBoard(state.gameLogic.playerBoard, state.gameLogic.gameState),
-    selectedShip: state.gameLogic.selected.piece,
-    selectedPos: state.gameLogic.selected.pos
+    board: state.gameLogic.playerBoard,
+    selectedPiece: state.gameLogic.selectedPiece,
+    selectedPos: state.gameLogic.selectedPosition
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    addShip: (selectedShip, selectedPosition, rowIdx, colIdx) => dispatch(addShip(selectedShip, selectedPosition, rowIdx, colIdx)),
+    addShip: (selectedPiece, selectedPosition, rowIdx, colIdx) => dispatch(addShip(selectedPiece, selectedPosition, rowIdx, colIdx)),
   }
 }
 

@@ -1,5 +1,6 @@
 import React from 'react';
-import ShipButton from './ShipButton.jsx'
+import ShipButton from './ShipButton.jsx';
+import PositionButton from './PositionButton.jsx';
 
 const Footer = (props) => (
   <div class="footer">
@@ -8,6 +9,7 @@ const Footer = (props) => (
     <ShipButton name="C" />
     <ShipButton name="S" />
     <ShipButton name="D" />
+    <PositionButton name="horizontal" />
   </div>  
   )
 
