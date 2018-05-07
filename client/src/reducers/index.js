@@ -18,7 +18,7 @@ const createBoard = () => {
   for (let m = 0; m < 10; m++) {
     let row = [];
     for (let n = 0; n < 10; n++) {
-      row.push({piece: null, pos: null, hit: false});
+      row.push({piece: 'E', pos: null, hit: false});
     }
     initialBoard.push(row);
   }
@@ -27,6 +27,7 @@ const createBoard = () => {
 
 const initialState = {
   gameState: 'BeginGame',
+  selected: {piece: 'ACC', pos: 'vertical'},
   playerBoard: createBoard(),
   enemyBoard: createBoard()
 }
@@ -60,7 +61,11 @@ function gameLogic (state = initialState, action) {
             return ship;
           })
         })
-      })  
+      })
+    case actions.SELECT_SHIP:
+      return Object.assign({}, state, {
+        selected: {piece: action.piece, pos: 'vertical'}
+      })    
     default: return state  
   }
 }

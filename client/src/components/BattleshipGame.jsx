@@ -1,5 +1,6 @@
 import React from 'react';
 import VisibleBoard from '../containers/visibleBoard';
+import Footer from './Footer.jsx';
 
 const BattleshipGame = () => (
     <div class="container">
@@ -10,7 +11,7 @@ const BattleshipGame = () => (
       <div id="enemyName">Computer</div>
       <VisibleBoard className="playerBoard" />
       <VisibleBoard className="enemyBoard" />
-      <div className="footer"></div>    
+      <Footer className="footer" />   
     </div>
   )
 
