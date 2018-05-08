@@ -6,6 +6,7 @@ export const CHANGE_GAME_PHASE = 'CHANGE_GAME_PHASE';
 export const CHOOSE_SHIP = 'CHOOSE_SHIP';
 export const COMPUTER_DESTROYS_PLAYER_SPOT = 'COMPUTER_DESTROYS_PLAYER_SPOT';
 export const DESTROY_SPOT = 'DESTROY_SPOT';
+export const INCREMENT_HIT_COUNT = 'INCREMENT_HIT_COUNT';
 export const INCREMENT_SHIP_COUNT = 'INCREMENT_SHIP_COUNT';
 export const SELECT_POSITION = 'SELECT_POSITION';
 export const SELECT_SHIP = 'SELECT_SHIP';
@@ -18,19 +19,34 @@ export const onCellClick = (row, col, boardType) => {
     const selectedShip = state.gameLogic.selectedPiece;
     const selectedPosition = state.gameLogic.selectedPosition;
     const playerBoard = state.gameLogic.playerBoard;
+    const enemyBoard = state.gameLogic.enemyBoard;
     const playerShipCount = state.shipsOnBoard.playerShipCount;
+    const { playerBoardHitCount, enemyBoardHitCount }  = state.hitCounts;
 
     if (gamePhase === 'pregamePhase' && boardType === 'playerBoard') {
       dispatch(incrementShipCount())
       dispatch(addShip(selectedShip, selectedPosition, row, col));
       if (playerShipCount === 4) {
-        alert('Start Battle!');
         dispatch(changeGamePhase('battlePhase'))
+        alert('Start Battle!');
       }
     } else if (gamePhase === 'battlePhase' && boardType === 'enemyBoard'){
       dispatch(destroyEnemySpot(row, col))
-      alert(`Enemy's turn!`);
-      dispatch(computerDestroysPlayerSpot(playerBoard))
+      if (enemyBoard[row][col].piece !== 'E') {
+        dispatch(incrementHitCount('enemyBoard'))
+        
+       //16 because state hit count hasnt updated yet
+        if (enemyBoardHitCount === 16) {
+          dispatch(changeGamePhase('endGame'))
+        }  else {
+          alert(`Enemy's Counter!`); 
+          dispatch(enemyTurn(playerBoard));         
+        }
+      } else {
+        alert(`Enemy's Turn!`);
+        dispatch(enemyTurn(playerBoard));         
+      }
+      // setTimeout(() => dispatch(computerDestroysPlayerSpot(playerBoard)), 2000)
     } else if (gamePhase === 'pregamePhase' && boardType === 'enemyBoard') {
       alert('Not ready to destroy!')
     } else {
@@ -39,6 +55,20 @@ export const onCellClick = (row, col, boardType) => {
 
   }
 }
+
+export const enemyTurn = (playerBoard) => {
+  return (dispatch, getState) => {
+    let {row, col} = helpers.destroyRandomSpotOnPlayerBoard(playerBoard);
+    setTimeout(() => dispatch(computerDestroysPlayerSpot(row, col)), 2000);
+    if (playerBoard[row][col].piece !== 'E') {
+      dispatch(incrementHitCount('playerBoard'));
+      if (getState().hitCounts.playerBoardHitCount === 17) {
+        dispatch(changeGamePhase('endGame'))
+      }
+    }
+  }
+}
+
 export const addShip = (selectedShip, selectedPosition, row, col) => {
   return {
     type: ADD_SHIP,
@@ -65,9 +95,15 @@ export const selectPosition = (position) => {
 }
 
 export const incrementShipCount = () => {
-  console.log('increment')
   return {
     type: INCREMENT_SHIP_COUNT
+  }
+}
+
+export const incrementHitCount = (boardType) => {
+  return {
+    type: INCREMENT_HIT_COUNT,
+    boardType
   }
 }
 
@@ -86,10 +122,8 @@ export const destroyEnemySpot = (row, col) => {
   }
 }
 
-export const computerDestroysPlayerSpot = (playerBoard) => {
-  let {row, col} = helpers.destroyRandomSpotOnPlayerBoard(playerBoard);
-  console.log('randomrow', row);
-  console.log('randomcol', col)
+export const computerDestroysPlayerSpot = (row, col) => {
+ // let {row, col} = helpers.destroyRandomSpotOnPlayerBoard(playerBoard);
   return {
     type: COMPUTER_DESTROYS_PLAYER_SPOT,
     row,

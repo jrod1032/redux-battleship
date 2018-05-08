@@ -100,30 +100,25 @@ function gameLogic (state = initialState, action) {
     default: return state  
   }
 }
-// const initialFleetState = 
 
-// function fleetState (state = initialFleetState, action) {
-//   switch(action.type) {
-//     case actions.DESTROY_SPOT:
-//       if ()
-//       return Object.assign({}, state, {
-
-//       })
-//   }
-// }
-
-function battleState (state = initialState, action) {
+function hitCounts(state={playerBoardHitCount: 0, enemyBoardHitCount: 0}, action) {
   switch(action.type) {
-
-    default: return state;  
+    case actions.INCREMENT_HIT_COUNT:
+    const boardHitType = action.boardType === 'playerBoard' ? 'playerBoardHitCount' : 'enemyBoardHitCount';
+    let newCount = state[boardHitType];
+    newCount++;
+      return Object.assign({}, state, {
+        [boardHitType]: newCount
+      })
+    default: return state  
   }
 }
 
 const BattleshipApp = combineReducers({
   gameLogic,
-  battleState,
   gamePhase,
-  shipsOnBoard
+  shipsOnBoard,
+  hitCounts
 });
 
 
