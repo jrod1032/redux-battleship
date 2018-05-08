@@ -3,14 +3,36 @@ import Board from '../components/Board.jsx';
 import { addShip, selectShip, destroyEnemySpot, onCellClick} from '../actions/index.js'
 
 const getVisibleBoard = (board, boardType) => {
-  return board
+  return board.map( (row, rowIdx) => {
+    return row.map( (spot, colIdx) => {
+      if (boardType === 'playerBoard') {
+        if (!board[rowIdx][colIdx].hit && board[rowIdx][colIdx].piece !== 'E') {
+          return board[rowIdx][colIdx].piece
+        } else if (board[rowIdx][colIdx].hit && board[rowIdx][colIdx].piece === 'E') {
+          return 'miss';
+        } else if (board[rowIdx][colIdx].hit && board[rowIdx][colIdx].piece !== 'E') {
+          return 'X';
+        } else {
+          return '';
+        }
+      } else {
+        if (!board[rowIdx][colIdx].hit) {
+          return ''
+        } else if (board[rowIdx][colIdx].hit && board[rowIdx][colIdx].piece === 'E') {
+          return 'miss';
+        } else {
+          return 'X'
+        }
+      }
+    })
+  })
 }
 
 const mapStateToProps = state => {
   console.log('state', state);
   return {
-    playerBoard: state.gameLogic.playerBoard,
-    enemyBoard: state.gameLogic.enemyBoard,
+    playerBoard: getVisibleBoard(state.gameLogic.playerBoard, 'playerBoard'),
+    enemyBoard: getVisibleBoard(state.gameLogic.enemyBoard, 'enemyBoard'),
     selectedPiece: state.gameLogic.selectedPiece,
     selectedPos: state.gameLogic.selectedPosition,
     gamePhase: state.gameLogic.gamePhase

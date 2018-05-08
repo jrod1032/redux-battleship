@@ -81,6 +81,20 @@ export const checkIfRangeIsOccupied = function(row, column, spaces, position, bo
   return false;
 }
 
+export const destroyRandomSpotOnPlayerBoard = function(board) {
+  let isSpaceOccupied = true;
+  let row;
+  let col;
+  while(isSpaceOccupied) {
+    row = getRandomNumber(0, 9);
+    col = getRandomNumber(0,9);
+    if (!board[row][col].hit) {
+      isSpaceOccupied = false;
+    }
+  }
+  return { row, col }
+}
+
 export const getRandomNumber = function(min, max) {
   return Math.floor(Math.random() * (max - min + 1) ) + min;
 }

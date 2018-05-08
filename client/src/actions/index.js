@@ -1,8 +1,10 @@
+import * as helpers from '../lib/index.js'
 
 export const ADD_SCORE = 'ADD_SCORE';
 export const ADD_SHIP = 'ADD_SHIP';
 export const CHANGE_GAME_PHASE = 'CHANGE_GAME_PHASE';
 export const CHOOSE_SHIP = 'CHOOSE_SHIP';
+export const COMPUTER_DESTROYS_PLAYER_SPOT = 'COMPUTER_DESTROYS_PLAYER_SPOT';
 export const DESTROY_SPOT = 'DESTROY_SPOT';
 export const INCREMENT_SHIP_COUNT = 'INCREMENT_SHIP_COUNT';
 export const SELECT_POSITION = 'SELECT_POSITION';
@@ -15,6 +17,7 @@ export const onCellClick = (row, col, boardType) => {
     const gamePhase = state.gamePhase;
     const selectedShip = state.gameLogic.selectedPiece;
     const selectedPosition = state.gameLogic.selectedPosition;
+    const playerBoard = state.gameLogic.playerBoard;
     const playerShipCount = state.shipsOnBoard.playerShipCount;
 
     if (gamePhase === 'pregamePhase' && boardType === 'playerBoard') {
@@ -26,6 +29,8 @@ export const onCellClick = (row, col, boardType) => {
       }
     } else if (gamePhase === 'battlePhase' && boardType === 'enemyBoard'){
       dispatch(destroyEnemySpot(row, col))
+      alert(`Enemy's turn!`);
+      dispatch(computerDestroysPlayerSpot(playerBoard))
     } else if (gamePhase === 'pregamePhase' && boardType === 'enemyBoard') {
       alert('Not ready to destroy!')
     } else {
@@ -76,6 +81,17 @@ export const changeGamePhase = (phase) => {
 export const destroyEnemySpot = (row, col) => {
   return {
     type: DESTROY_SPOT,
+    row,
+    col
+  }
+}
+
+export const computerDestroysPlayerSpot = (playerBoard) => {
+  let {row, col} = helpers.destroyRandomSpotOnPlayerBoard(playerBoard);
+  console.log('randomrow', row);
+  console.log('randomcol', col)
+  return {
+    type: COMPUTER_DESTROYS_PLAYER_SPOT,
     row,
     col
   }

@@ -77,7 +77,26 @@ function gameLogic (state = initialState, action) {
           }   
           return shipHitCount;
         })
-      })  
+      }) 
+    case actions.COMPUTER_DESTROYS_PLAYER_SPOT:
+      return Object.assign({}, state, {
+        playerBoard: state.playerBoard.map((row, rowIdx) => {
+          return row.map( (spot, colIdx) => {
+            if (rowIdx === action.row && colIdx === action.col) {
+              return Object.assign({}, spot, {hit: true})
+            }
+            return spot
+          })
+        }),
+        playerFleet: state.playerFleet.map( shipHitCount => {
+          let spotName = state.enemyBoard[action.row][action.col].piece;
+          if (spotName === shipHitCount[0]) {
+            shipHitCount[1]++;
+            return shipHitCount;
+          }
+          return shipHitCount;
+        })
+      })   
     default: return state  
   }
 }

@@ -29,10 +29,7 @@ const Board = (props) => {
           onClick={ 
             () => props.onCellClick(rowIdx, colIdx, props.boardType)
           }>
-          {props.boardType === 'playerBoard' ? 
-            !board[rowIdx][colIdx].hit && board[rowIdx][colIdx].piece !== 'E' ? board[rowIdx][colIdx].piece : ''
-            : !board[rowIdx][colIdx].hit ? '' : board[rowIdx][colIdx].piece
-          }
+          {board[rowIdx][colIdx]}
           </td>
         })}</tr>
       })}   
