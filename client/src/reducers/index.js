@@ -3,11 +3,6 @@ import * as actions from '../actions/index.js';
 import * as helpers from '../lib/index.js';
 import { gamePieces } from '../gameConstants.js';
 
-function gameStatus(state = 'pregame', action) {
-    console.log('start game');
-    return null
-}
-
 const initialState = {
   gamePhase: 'BeginGame',
   selectedPiece:'ACC',
@@ -32,9 +27,19 @@ const initialState = {
 
 function gamePhase (state = 'pregamePhase', action) {
   switch(action.type) {
-    case actions.START_BATTLE:
+    case actions.CHANGE_GAME_PHASE:
+      return action.phase;
+    default: return state;  
+  }
+}
+
+function shipsOnBoard(state = {playerShipCount: 0}, action) {
+  switch(action.type) {
+    case actions.INCREMENT_SHIP_COUNT:
+      let newCount = state.playerShipCount;
+      newCount++
       return Object.assign({}, state, {
-        gamePhase: 'battlePhase'
+        playerShipCount: newCount
       })
     default: return state;  
   }
@@ -60,16 +65,6 @@ function gameLogic (state = initialState, action) {
           return row.map((spot, colIdx) => {
             if (rowIdx === action.row && colIdx === action.col) {
               return Object.assign({}, spot, {hit: true})
-             // return spot.piece === 'E' ?  Object.assign({}, spot, {hit: true})
-             // : Object.assign({}, spot, 
-             //  { hit: true, 
-             //    enemyFleet: state.enemyFleet.map( shipHitCount => {
-             //      if (shipHitCount[0] === spot.piece) {
-             //        shipHitCount[1]++;
-             //      }
-             //      return shipHitCount;
-             //    } )
-             //  })
             }
             return spot;
           })
@@ -106,9 +101,10 @@ function battleState (state = initialState, action) {
 }
 
 const BattleshipApp = combineReducers({
-  gamePhase, 
   gameLogic,
-  battleState
+  battleState,
+  gamePhase,
+  shipsOnBoard
 });
 
 

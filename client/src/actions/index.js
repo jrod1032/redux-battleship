@@ -1,11 +1,13 @@
 
-export const START_GAME = 'START_GAME';
-export const ADD_SHIP = 'ADD_SHIP';
-export const DESTROY_SPOT = 'DESTROY_SPOT';
-export const CHOOSE_SHIP = 'CHOOSE_SHIP';
 export const ADD_SCORE = 'ADD_SCORE';
-export const SELECT_SHIP = 'SELECT_SHIP';
+export const ADD_SHIP = 'ADD_SHIP';
+export const CHANGE_GAME_PHASE = 'CHANGE_GAME_PHASE';
+export const CHOOSE_SHIP = 'CHOOSE_SHIP';
+export const DESTROY_SPOT = 'DESTROY_SPOT';
+export const INCREMENT_SHIP_COUNT = 'INCREMENT_SHIP_COUNT';
 export const SELECT_POSITION = 'SELECT_POSITION';
+export const SELECT_SHIP = 'SELECT_SHIP';
+export const START_GAME = 'START_GAME';
 
 export const onCellClick = (row, col, boardType) => {
   return (dispatch, getState) => {
@@ -13,10 +15,15 @@ export const onCellClick = (row, col, boardType) => {
     const gamePhase = state.gamePhase;
     const selectedShip = state.gameLogic.selectedPiece;
     const selectedPosition = state.gameLogic.selectedPosition;
+    const playerShipCount = state.shipsOnBoard.playerShipCount;
 
     if (gamePhase === 'pregamePhase' && boardType === 'playerBoard') {
-      console.log('pregamePhase');
+      dispatch(incrementShipCount())
       dispatch(addShip(selectedShip, selectedPosition, row, col));
+      if (playerShipCount === 4) {
+        alert('Start Battle!');
+        dispatch(changeGamePhase('battlePhase'))
+      }
     } else if (gamePhase === 'battlePhase' && boardType === 'enemyBoard'){
       dispatch(destroyEnemySpot(row, col))
     } else if (gamePhase === 'pregamePhase' && boardType === 'enemyBoard') {
@@ -49,6 +56,20 @@ export const selectPosition = (position) => {
   return {
     type: SELECT_POSITION,
     position
+  }
+}
+
+export const incrementShipCount = () => {
+  console.log('increment')
+  return {
+    type: INCREMENT_SHIP_COUNT
+  }
+}
+
+export const changeGamePhase = (phase) => {
+  return {
+    type: CHANGE_GAME_PHASE,
+    phase
   }
 }
 
