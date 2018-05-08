@@ -30,6 +30,16 @@ const initialState = {
   ],
 }
 
+function gamePhase (state = 'pregamePhase', action) {
+  switch(action.type) {
+    case actions.START_BATTLE:
+      return Object.assign({}, state, {
+        gamePhase: 'battlePhase'
+      })
+    default: return state;  
+  }
+}
+
 function gameLogic (state = initialState, action) {
   switch (action.type) {
     case actions.ADD_SHIP:
@@ -96,7 +106,7 @@ function battleState (state = initialState, action) {
 }
 
 const BattleshipApp = combineReducers({
-  gameStatus, 
+  gamePhase, 
   gameLogic,
   battleState
 });
