@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import Board from '../components/Board.jsx';
-import { addShip, selectShip, destroyEnemySpot} from '../actions/index.js'
+import { addShip, selectShip, destroyEnemySpot, onCellClick} from '../actions/index.js'
 
 const getVisibleBoard = (board, boardType) => {
   return board
@@ -19,6 +19,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
+    onCellClick: (row, col, boardType) => dispatch(onCellClick(row, col, boardType) ),
     addShip: (selectedPiece, selectedPosition, rowIdx, colIdx) => dispatch(addShip(selectedPiece, selectedPosition, rowIdx, colIdx)),
     destroyEnemySpot: (row, column) => dispatch(destroyEnemySpot(row, column))
   }

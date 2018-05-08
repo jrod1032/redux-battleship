@@ -27,8 +27,7 @@ const Board = (props) => {
           return <td
           className="boardCell"
           onClick={ 
-            props.boardType === 'playerBoard' ? () => props.addShip(props.selectedPiece, props.selectedPos, rowIdx, colIdx)
-            : () => props.destroyEnemySpot(rowIdx, colIdx)
+            () => props.onCellClick(rowIdx, colIdx, props.boardType)
           }>
           {props.boardType === 'playerBoard' ? 
             !board[rowIdx][colIdx].hit && board[rowIdx][colIdx].piece !== 'E' ? board[rowIdx][colIdx].piece : ''

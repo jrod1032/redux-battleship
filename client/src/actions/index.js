@@ -7,6 +7,26 @@ export const ADD_SCORE = 'ADD_SCORE';
 export const SELECT_SHIP = 'SELECT_SHIP';
 export const SELECT_POSITION = 'SELECT_POSITION';
 
+export const onCellClick = (row, col, boardType) => {
+  return (dispatch, getState) => {
+    const state = getState();
+    const gamePhase = state.gamePhase;
+    const selectedShip = state.gameLogic.selectedPiece;
+    const selectedPosition = state.gameLogic.selectedPosition;
+
+    if (gamePhase === 'pregamePhase' && boardType === 'playerBoard') {
+      console.log('pregamePhase');
+      dispatch(addShip(selectedShip, selectedPosition, row, col));
+    } else if (gamePhase === 'battlePhase' && boardType === 'enemyBoard'){
+      dispatch(destroyEnemySpot(row, col))
+    } else if (gamePhase === 'pregamePhase' && boardType === 'enemyBoard') {
+      alert('Not ready to destroy!')
+    } else {
+      alert('Dont destroy your own ships!')
+    }
+
+  }
+}
 export const addShip = (selectedShip, selectedPosition, row, col) => {
   return {
     type: ADD_SHIP,
@@ -39,18 +59,3 @@ export const destroyEnemySpot = (row, col) => {
     col
   }
 }
-
-
-
-// export const addScore = () => {
-//   return {
-//     type: 
-//   }
-// }
-
-//exampleState
-
-// {
-//   gameState: 'Battle' || 'BeginGame',
-//   playerBoard: [[{piece: 'ACC1', pos: 'horizontal', hit: false}, {piece: 'ACC2', hit: false}]]
-// }
