@@ -14,7 +14,7 @@
     border-width: 1px
 }
 
-#myFleet {
+#playerFleet {
   grid-column-start: 1;
   grid-column-end: 5;
   grid-row-start: 1;
@@ -33,6 +33,28 @@
   grid-column-end: 11;
   grid-row-start: 1;
   grid-row-end: 3;
+}
+
+.shipStatsHeader {
+  text-align: center;
+  padding: 1px;
+  margin: 1px;
+  font-weight: bold;
+}
+
+.shipList {
+  font-family: Helvetica;
+  text-align: justify;
+  list-style-type: square;
+  margin-left: 50px;
+}
+
+.shipListItem {
+  font-size: 10px;
+}
+
+.shipList, .shipStatsHeader {
+  color: white;
 }
 
 #playerName {
@@ -78,7 +100,7 @@
   font-size: 12px;
 }
 
-#myFleet, #enemyFleet, #shots, #playerName, #enemyName, #playerName {
+#playerFleet, #enemyFleet, #shots, #playerName, #enemyName, #playerName {
   background: radial-gradient(ellipse at center, rgba(51,92,150,1) 12%,rgba(52,80,155,1) 63%,rgba(37,58,109,1) 81%);
 }
 

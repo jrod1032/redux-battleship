@@ -1,12 +1,13 @@
 import React from 'react';
 import VisibleBoard from '../containers/visibleBoard';
 import Footer from './Footer.jsx';
+import FleetStats from '../containers/fleetStats'
 
 const BattleshipGame = () => (
     <div class="container">
-      <div id="myFleet">myStats</div>
+      <FleetStats fleet="playerFleet"/>
       <div id="shots">shots Left</div>
-      <div id="enemyFleet">enemyFleet</div>
+      <FleetStats fleet="enemyFleet"/>
       <div id="playerName">Jarrod</div>
       <div id="enemyName">Computer</div>
       <VisibleBoard className="playerBoard" boardType="playerBoard"/>

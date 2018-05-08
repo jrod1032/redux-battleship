@@ -13,7 +13,21 @@ const initialState = {
   selectedPiece:'ACC',
   selectedPosition: 'vertical',
   playerBoard: helpers.createBoard(),
-  enemyBoard: helpers.createBoardWithRandomPieces()
+  enemyBoard: helpers.createBoardWithRandomPieces(),
+  enemyFleet: [
+    ['ACC', 0, gamePieces['ACC']], 
+    ['BS', 0, gamePieces['BS']],
+    ['C', 0, gamePieces['C']],
+    ['D', 0, gamePieces['D']],
+    ['S', 0, gamePieces['S']],
+  ],
+  playerFleet: [
+    ['ACC', 0, gamePieces['ACC']], 
+    ['BS', 0, gamePieces['BS']],
+    ['C', 0, gamePieces['C']],
+    ['D', 0, gamePieces['D']],
+    ['S', 0, gamePieces['S']],
+  ],
 }
 
 function gameLogic (state = initialState, action) {
@@ -33,19 +47,46 @@ function gameLogic (state = initialState, action) {
     case actions.DESTROY_SPOT:
       return Object.assign({}, state, {
         enemyBoard: state.enemyBoard.map((row, rowIdx) => {
-          return row.map((ship, colIdx) => {
+          return row.map((spot, colIdx) => {
             if (rowIdx === action.row && colIdx === action.col) {
-              return Object.assign({}, ship, {
-                hit: true
-              })
+              return Object.assign({}, spot, {hit: true})
+             // return spot.piece === 'E' ?  Object.assign({}, spot, {hit: true})
+             // : Object.assign({}, spot, 
+             //  { hit: true, 
+             //    enemyFleet: state.enemyFleet.map( shipHitCount => {
+             //      if (shipHitCount[0] === spot.piece) {
+             //        shipHitCount[1]++;
+             //      }
+             //      return shipHitCount;
+             //    } )
+             //  })
             }
-            return ship;
+            return spot;
           })
+        }),
+        enemyFleet: state.enemyFleet.map( shipHitCount => {
+          let spotName = state.enemyBoard[action.row][action.col].piece;
+          if (spotName === shipHitCount[0])  {
+            shipHitCount[1]++;
+            return shipHitCount
+          }   
+          return shipHitCount;
         })
       })  
     default: return state  
   }
 }
+// const initialFleetState = 
+
+// function fleetState (state = initialFleetState, action) {
+//   switch(action.type) {
+//     case actions.DESTROY_SPOT:
+//       if ()
+//       return Object.assign({}, state, {
+
+//       })
+//   }
+// }
 
 function battleState (state = initialState, action) {
   switch(action.type) {
