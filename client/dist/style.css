@@ -149,6 +149,10 @@ table {
   grid-row-end: 11; 
 }
 
+.glowing {
+  border-color: gold !important;
+}
+
 
 /*
 #playerName, #enemyName, .shipList, .shipListItem {

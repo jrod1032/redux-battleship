@@ -23,6 +23,9 @@ const initialState = {
     ['D', 0, gamePieces['D']],
     ['S', 0, gamePieces['S']],
   ],
+  playerName: actions.PLAYER_NAME,
+  enemyName: actions.ENEMY_NAME,
+  turn: actions.PLAYER_NAME
 }
 
 function gamePhase (state = 'pregamePhase', action) {
@@ -97,6 +100,10 @@ function gameLogic (state = initialState, action) {
           return shipHitCount;
         })
       })   
+    case actions.CHANGE_TURN:
+      return Object.assign({}, state, {
+        turn: action.turn
+      }) 
     default: return state  
   }
 }

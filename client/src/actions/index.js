@@ -3,6 +3,7 @@ import * as helpers from '../lib/index.js'
 export const ADD_SCORE = 'ADD_SCORE';
 export const ADD_SHIP = 'ADD_SHIP';
 export const CHANGE_GAME_PHASE = 'CHANGE_GAME_PHASE';
+export const CHANGE_TURN = 'CHANGE_TURN';
 export const CHOOSE_SHIP = 'CHOOSE_SHIP';
 export const COMPUTER_DESTROYS_PLAYER_SPOT = 'COMPUTER_DESTROYS_PLAYER_SPOT';
 export const DESTROY_SPOT = 'DESTROY_SPOT';
@@ -11,6 +12,9 @@ export const INCREMENT_SHIP_COUNT = 'INCREMENT_SHIP_COUNT';
 export const SELECT_POSITION = 'SELECT_POSITION';
 export const SELECT_SHIP = 'SELECT_SHIP';
 export const START_GAME = 'START_GAME';
+
+export const PLAYER_NAME = 'Player';
+export const ENEMY_NAME = 'Computer';
 
 export const onCellClick = (row, col, boardType) => {
   return (dispatch, getState) => {
@@ -39,11 +43,13 @@ export const onCellClick = (row, col, boardType) => {
         if (enemyBoardHitCount === 16) {
           dispatch(changeGamePhase('endGame'))
         }  else {
-          alert(`Enemy's Counter!`); 
+          // alert(`Enemy's Counter!`); 
+          dispatch(changeTurn(ENEMY_NAME))
           dispatch(enemyTurn(playerBoard));         
         }
       } else {
-        alert(`Enemy's Turn!`);
+        // alert(`Enemy's Turn!`);
+        dispatch(changeTurn(ENEMY_NAME))
         dispatch(enemyTurn(playerBoard));         
       }
       // setTimeout(() => dispatch(computerDestroysPlayerSpot(playerBoard)), 2000)
@@ -66,6 +72,7 @@ export const enemyTurn = (playerBoard) => {
         dispatch(changeGamePhase('endGame'))
       }
     }
+    dispatch(changeTurn(PLAYER_NAME))
   }
 }
 
@@ -107,6 +114,12 @@ export const incrementHitCount = (boardType) => {
   }
 }
 
+export const changeTurn = (turn) => {
+  return {
+    type: CHANGE_TURN,
+    turn
+  }
+}
 export const changeGamePhase = (phase) => {
   return {
     type: CHANGE_GAME_PHASE,
