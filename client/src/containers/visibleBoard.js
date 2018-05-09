@@ -21,7 +21,7 @@ const getVisibleBoard = (board, boardType) => {
         } else if (board[rowIdx][colIdx].hit && board[rowIdx][colIdx].piece === 'E') {
           return 'miss';
         } else {
-          return 'X';
+          return board[rowIdx][colIdx].piece;
         }
       }
     })
