@@ -11,8 +11,13 @@
 .container > div {
     border: solid;
     border-color: #73c0f9;
-    border-width: 1px
+    border-width: 1px;
 }
+
+div {
+font-family: Roboto Mono, monospace;
+/*font-family: 'Indie Flower', cursive;
+*/}
 
 #playerFleet {
   grid-column-start: 1;
@@ -21,11 +26,19 @@
   grid-row-end: 3;
 }
 
-#shots {
+#gamePhase {
   grid-column-start: 5;
   grid-column-end: 7;
   grid-row-start: 1;
   grid-row-end: 3;
+}
+
+#gamePhaseTitle {
+  text-align: center;
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
 }
 
 #enemyFleet {
@@ -38,22 +51,27 @@
 .shipStatsHeader {
   text-align: center;
   padding: 1px;
-  margin: 1px;
+  margin: 2px, 0px, 2px, 0px;
   font-weight: bold;
 }
 
 .shipList {
-  font-family: Helvetica;
-  text-align: justify;
-  list-style-type: square;
-  margin-left: 50px;
+/*  text-align: justify;*/
+  list-style-type: none;
+  margin: 0px;
+/*  margin-left: 30px;*/
 }
 
 .shipListItem {
+  float: left;
+  padding: 5px;
   font-size: 10px;
+  text-transform: uppercase;
+/*  display: inline-block;*/
+  line-height: 1em;
 }
 
-.shipList, .shipStatsHeader {
+.shipList, .shipStatsHeader, #playerName, #enemyName, #gamePhase {
   color: white;
 }
 
@@ -73,10 +91,8 @@
 
 #playerName, #enemyName {
   text-align: center;
-  font-family: Helvetica;
   text-shadow: 3px 4px 10px rgba(150, 150, 150, 1);
   font-size: 24px;
-  color: white;
   border-radius: 5%;
 }
 
@@ -100,7 +116,7 @@
   font-size: 12px;
 }
 
-#playerFleet, #enemyFleet, #shots, #playerName, #enemyName, #playerName {
+#playerFleet, #enemyFleet, #gamePhase, #playerName, #enemyName, #playerName {
   background: radial-gradient(ellipse at center, rgba(51,92,150,1) 12%,rgba(52,80,155,1) 63%,rgba(37,58,109,1) 81%);
 }
 
@@ -126,10 +142,15 @@ table {
 /*  width: 100%;*/
 }
 
-
 .footer {
   grid-column-start: 1;
   grid-column-end: 11;
   grid-row-start: 11;
   grid-row-end: 11; 
 }
+
+
+/*
+#playerName, #enemyName, .shipList, .shipListItem {
+  font-family: Roboto Mono, monospace; 
+}*/
