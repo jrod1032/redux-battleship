@@ -1,13 +1,13 @@
 import { connect } from 'react-redux';
 import Board from '../components/Board.jsx';
-import { addShip, selectShip, destroyEnemySpot, onCellClick} from '../actions/index.js'
+import { onCellClick } from '../actions/index.js';
 
 const getVisibleBoard = (board, boardType) => {
   return board.map( (row, rowIdx) => {
     return row.map( (spot, colIdx) => {
       if (boardType === 'playerBoard') {
         if (!board[rowIdx][colIdx].hit && board[rowIdx][colIdx].piece !== 'E') {
-          return board[rowIdx][colIdx].piece
+          return board[rowIdx][colIdx].piece;
         } else if (board[rowIdx][colIdx].hit && board[rowIdx][colIdx].piece === 'E') {
           return 'miss';
         } else if (board[rowIdx][colIdx].hit && board[rowIdx][colIdx].piece !== 'E') {
@@ -17,11 +17,11 @@ const getVisibleBoard = (board, boardType) => {
         }
       } else {
         if (!board[rowIdx][colIdx].hit) {
-          return ''
+          return '';
         } else if (board[rowIdx][colIdx].hit && board[rowIdx][colIdx].piece === 'E') {
           return 'miss';
         } else {
-          return 'X'
+          return 'X';
         }
       }
     })
@@ -42,8 +42,6 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     onCellClick: (row, col, boardType) => dispatch(onCellClick(row, col, boardType) ),
-    addShip: (selectedPiece, selectedPosition, rowIdx, colIdx) => dispatch(addShip(selectedPiece, selectedPosition, rowIdx, colIdx)),
-    destroyEnemySpot: (row, column) => dispatch(destroyEnemySpot(row, column))
   }
 }
 

@@ -89,7 +89,7 @@ function gameLogic (state = initialState, action) {
           })
         }),
         playerFleet: state.playerFleet.map( shipHitCount => {
-          let spotName = state.enemyBoard[action.row][action.col].piece;
+          let spotName = state.playerBoard[action.row][action.col].piece;
           if (spotName === shipHitCount[0]) {
             shipHitCount[1]++;
             return shipHitCount;
