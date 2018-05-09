@@ -45,12 +45,12 @@ export const onCellClick = (row, col, boardType) => {
         }  else {
           // alert(`Enemy's Counter!`); 
           dispatch(changeTurn(ENEMY_NAME))
-          dispatch(enemyTurn(playerBoard));         
+          setTimeout(()=> dispatch(enemyTurn(playerBoard)), 2000);         
         }
       } else {
         // alert(`Enemy's Turn!`);
         dispatch(changeTurn(ENEMY_NAME))
-        dispatch(enemyTurn(playerBoard));         
+        setTimeout(()=> dispatch(enemyTurn(playerBoard)), 2000);         
       }
       // setTimeout(() => dispatch(computerDestroysPlayerSpot(playerBoard)), 2000)
     } else if (gamePhase === 'pregamePhase' && boardType === 'enemyBoard') {
@@ -65,7 +65,7 @@ export const onCellClick = (row, col, boardType) => {
 export const enemyTurn = (playerBoard) => {
   return (dispatch, getState) => {
     let {row, col} = helpers.destroyRandomSpotOnPlayerBoard(playerBoard);
-    setTimeout(() => dispatch(computerDestroysPlayerSpot(row, col)), 2000);
+    dispatch(computerDestroysPlayerSpot(row, col));
     if (playerBoard[row][col].piece !== 'E') {
       dispatch(incrementHitCount('playerBoard'));
       if (getState().hitCounts.playerBoardHitCount === 17) {
