@@ -86,6 +86,17 @@ function gameLogic (state = initialState, action) {
           return shipHitCount;
         })
       }) 
+    case actions.DESTROY_SHIP:
+      return Object.assign({}, state, {
+        enemyBoard: state.enemyBoard.map( (row, rowIdx) => {
+          return row.map( (spot, colIdx) => {
+            if (spot.piece === action.ship.piece) {
+              return Object.assign({}, spot, {show: true})
+            }
+            return spot;
+          })
+        })
+      }) 
     case actions.COMPUTER_DESTROYS_PLAYER_SPOT:
       return Object.assign({}, state, {
         playerBoard: state.playerBoard.map((row, rowIdx) => {

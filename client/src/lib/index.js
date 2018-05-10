@@ -5,7 +5,7 @@ export const createBoard = (board) => {
   for (let m = 0; m < 10; m++) {
     let row = [];
     for (let n = 0; n < 10; n++) {
-      let piece = board ? board[m][n] : {piece: 'E', pos: null, hit: false};
+      let piece = board ? board[m][n] : {piece: 'E', pos: null, hit: false, show: false};
       row.push(piece);
     }
     newBoard.push(row);
@@ -15,7 +15,7 @@ export const createBoard = (board) => {
 
 export const getNewBoard = (board, action) => {
   const newBoard = createBoard(board);
-  const newPiece = {piece: action.piece, pos: action.pos, hit: false}
+  const newPiece = {piece: action.piece, pos: action.pos, hit: false, show: false}
   console.log('newPiece', newPiece)
   if (action.pos === 'horizontal') {
     for (let n = 0; n < gamePieces[action.piece]; n++) {
@@ -36,7 +36,7 @@ export const createBoardWithRandomPieces = () => {
     let shipName = ships[i];
     let position = getRandomPosition();
     let { row, column } = getValidPosition(shipName, position, newBoard);
-    let newPiece = {piece: shipName, pos: position, hit: false}
+    let newPiece = {piece: shipName, pos: position, hit: false, show: false}
     for (let j = 0; j < gamePieces[shipName]; j++) {
       if (position === 'horizontal') {
         newBoard[row][column + j] = newPiece;

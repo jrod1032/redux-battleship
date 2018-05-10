@@ -6,22 +6,24 @@ const getVisibleBoard = (board, boardType) => {
   return board.map( (row, rowIdx) => {
     return row.map( (spot, colIdx) => {
       if (boardType === 'playerBoard') {
-        if (!board[rowIdx][colIdx].hit && board[rowIdx][colIdx].piece !== 'E') {
-          return board[rowIdx][colIdx].piece;
-        } else if (board[rowIdx][colIdx].hit && board[rowIdx][colIdx].piece === 'E') {
+        if (!spot.hit && spot.piece !== 'E') {
+          return spot.piece;
+        } else if (spot.hit && spot.piece === 'E') {
           return 'miss';
-        } else if (board[rowIdx][colIdx].hit && board[rowIdx][colIdx].piece !== 'E') {
+        } else if (spot.hit && spot.piece !== 'E') {
           return 'X';
         } else {
           return '';
         }
       } else {
-        if (!board[rowIdx][colIdx].hit) {
+        if (!spot.hit) {
           return '';
-        } else if (board[rowIdx][colIdx].hit && board[rowIdx][colIdx].piece === 'E') {
+        } else if (spot.hit && spot.piece === 'E') {
           return 'miss';
+        } else if (spot.show){
+          return spot.piece;
         } else {
-          return board[rowIdx][colIdx].piece;
+          return 'X'
         }
       }
     })
