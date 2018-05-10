@@ -1,7 +1,15 @@
+*{
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
 .container {
   display: grid;
   grid-template-columns: repeat(10, auto);
-  grid-template-rows: repeat(10, 50px);
+  grid-template-rows: repeat(10, auto);
+  width: 100vw;
+  height: 100vh;
 
 /*  grid-template-areas: 
     "myFleet myFleet enemyFleet enemyFleet"
@@ -46,6 +54,13 @@ font-family: Roboto Mono, monospace;
   grid-column-end: 11;
   grid-row-start: 1;
   grid-row-end: 3;
+}
+
+.footer {
+  grid-column-start: 1;
+  grid-column-end: 11;
+  grid-row-start: 11;
+  grid-row-end: 11; 
 }
 
 .shipStatsHeader {
@@ -116,7 +131,7 @@ font-family: Roboto Mono, monospace;
   font-size: 12px;
 }
 
-#playerFleet, #enemyFleet, #gamePhase, #playerName, #enemyName, #playerName {
+#playerFleet, #enemyFleet, #gamePhase, #playerName, #enemyName, #playerName, .footer {
   background: radial-gradient(ellipse at center, rgba(51,92,150,1) 12%,rgba(52,80,155,1) 63%,rgba(37,58,109,1) 81%);
 }
 
@@ -142,12 +157,7 @@ table {
 /*  width: 100%;*/
 }
 
-.footer {
-  grid-column-start: 1;
-  grid-column-end: 11;
-  grid-row-start: 11;
-  grid-row-end: 11; 
-}
+
 
 .glowing {
   border-color: gold !important;

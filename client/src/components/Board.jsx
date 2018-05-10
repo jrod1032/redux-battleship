@@ -6,7 +6,8 @@ const columns = [1,2,3,4,5,6,7,8,9,10];
 const Board = (props) => {
   const board = props.boardType === 'playerBoard' ? props.playerBoard : props.enemyBoard;
   return (
-  <div className={props.className}>
+  <div className={props.className}
+       onMouseEnter={() => document.getElementsByClassName('playerBoard')[0].style.cursor = 'copy'}>
     <table>
       <tr className="boardOuter">
         <th></th>
@@ -27,8 +28,7 @@ const Board = (props) => {
           return <td
           className="boardCell"
           onClick={ 
-            () => props.onCellClick(rowIdx, colIdx, props.boardType)
-          }>
+            () => props.onCellClick(rowIdx, colIdx, props.boardType)}>
           {board[rowIdx][colIdx]}
           </td>
         })}</tr>
