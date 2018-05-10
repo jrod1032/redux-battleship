@@ -2,6 +2,7 @@ import * as helpers from '../lib/index.js'
 
 export const ADD_SCORE = 'ADD_SCORE';
 export const ADD_SHIP = 'ADD_SHIP';
+export const ADD_SHIP_TO_ALREADY_CHOSEN_LIST = 'ADD_SHIP_TO_ALREADY_CHOSEN_LIST'
 export const CHANGE_GAME_PHASE = 'CHANGE_GAME_PHASE';
 export const CHANGE_TURN = 'CHANGE_TURN';
 export const CHOOSE_SHIP = 'CHOOSE_SHIP';
@@ -24,12 +25,24 @@ export const onCellClick = (row, col, boardType) => {
     const selectedPosition = state.gameLogic.selectedPosition;
     const playerBoard = state.gameLogic.playerBoard;
     const enemyBoard = state.gameLogic.enemyBoard;
+    const alreadySelectedShips = state.gameLogic.alreadySelectedShips
+    console.log('alreadySelectedShips', alreadySelectedShips)
     const playerShipCount = state.shipsOnBoard.playerShipCount;
     const { playerBoardHitCount, enemyBoardHitCount }  = state.hitCounts;
 
     if (gamePhase === 'pregamePhase' && boardType === 'playerBoard') {
+
+      if (!selectedShip || !selectedPosition) {
+        alert('Please select a ship and position');
+        return;
+      } else if (alreadySelectedShips.indexOf(selectedShip) > -1) {
+        alert(`You have already chosen the ${selectedShip}. Please choose another`)
+        return;
+      }      
+
       dispatch(incrementShipCount())
       dispatch(addShip(selectedShip, selectedPosition, row, col));
+      dispatch(addShipToAlreadyChosenList(selectedShip))
       if (playerShipCount === 4) {
         dispatch(changeGamePhase('battlePhase'))
         alert('Start Battle!');
@@ -77,6 +90,8 @@ export const enemyTurn = (playerBoard) => {
 }
 
 export const addShip = (selectedShip, selectedPosition, row, col) => {
+  console.log('addShip', selectedShip, selectedPosition, row, col)
+  if (!selectedShip || !selectedPosition) return;
   return {
     type: ADD_SHIP,
     piece: selectedShip,
@@ -86,7 +101,15 @@ export const addShip = (selectedShip, selectedPosition, row, col) => {
   }
 }
 
+export const addShipToAlreadyChosenList = selectedShip => {
+  return {
+    type: ADD_SHIP_TO_ALREADY_CHOSEN_LIST,
+    selectedShip
+  }
+}
+
 export const selectShip = (piece, position="vertical") => {
+  if (!piece) return;
   return {
     type: SELECT_SHIP,
     piece,
@@ -95,6 +118,7 @@ export const selectShip = (piece, position="vertical") => {
 }
 
 export const selectPosition = (position) => {
+  if (!position) return;
   return {
     type: SELECT_POSITION,
     position

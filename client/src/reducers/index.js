@@ -5,8 +5,8 @@ import { gamePieces } from '../gameConstants.js';
 
 const initialState = {
   gamePhase: 'BeginGame',
-  selectedPiece:'ACC',
-  selectedPosition: 'vertical',
+  selectedPiece: null,
+  selectedPosition: null,
   playerBoard: helpers.createBoard(),
   enemyBoard: helpers.createBoardWithRandomPieces(),
   enemyFleet: [
@@ -25,7 +25,8 @@ const initialState = {
   ],
   playerName: actions.PLAYER_NAME,
   enemyName: actions.ENEMY_NAME,
-  turn: actions.PLAYER_NAME
+  turn: actions.PLAYER_NAME,
+  alreadySelectedShips: []
 }
 
 function gamePhase (state = 'pregamePhase', action) {
@@ -54,6 +55,10 @@ function gameLogic (state = initialState, action) {
       return Object.assign({}, state, {
           playerBoard: helpers.getNewBoard(state.playerBoard, action)
       })
+    case actions.ADD_SHIP_TO_ALREADY_CHOSEN_LIST:
+      return Object.assign({}, state, {
+        alreadySelectedShips: [...state.alreadySelectedShips, action.selectedShip]
+      })  
     case actions.SELECT_SHIP:
       return Object.assign({}, state, {
         selectedPiece: action.piece
