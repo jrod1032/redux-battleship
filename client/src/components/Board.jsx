@@ -7,7 +7,7 @@ const Board = (props) => {
   const board = props.boardType === 'playerBoard' ? props.playerBoard : props.enemyBoard;
   return (
   <div className={props.className}
-       onMouseEnter={() => document.getElementsByClassName('playerBoard')[0].style.cursor = 'copy'}>
+       onMouseEnter={props.getCursorOnEnter}>
     <table>
       <tr className="boardOuter">
         <th></th>
