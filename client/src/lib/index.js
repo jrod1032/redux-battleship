@@ -70,6 +70,19 @@ export const getValidPosition = function(shipName, position, board) {
   return { row, column };
 }
 
+export const checkIfRangeIsValid = function(row, column, spaces, position, board) {
+  for (let i = 0; i < spaces; i++) {
+    //check if valid spot for function reuse. Computer generated row and position 
+    //will be valid
+    if (position === 'horizontal' && !board[row][column + i]) {
+      return false;
+    } else if (position === 'vertical' && !board[row + i]) {
+      return false;
+    }
+  }
+  return true;
+}
+
 export const checkIfRangeIsOccupied = function(row, column, spaces, position, board) {
   for (let i = 0; i < spaces; i++) {
     if (position === 'horizontal' && board[row][column + i].piece !== 'E') {

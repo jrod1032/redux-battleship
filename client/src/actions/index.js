@@ -1,4 +1,5 @@
-import * as helpers from '../lib/index.js'
+import * as helpers from '../lib/index.js';
+import { gamePieces } from '../gameConstants.js'
 
 export const ADD_SCORE = 'ADD_SCORE';
 export const ADD_SHIP = 'ADD_SHIP';
@@ -33,7 +34,10 @@ export const onCellClick = (row, col, boardType) => {
       } else if (alreadySelectedShips.indexOf(selectedPiece) > -1) {
         alert(`You have already chosen the ${selectedPiece}. Please choose another`)
         return;
-      }      
+      } else if (!helpers.checkIfRangeIsValid(row, col, gamePieces[selectedPiece], selectedPosition, playerBoard)) {
+        alert('Invalid spot!');
+        return;
+      }    
 
       dispatch(incrementShipCount())
       dispatch(addShip(selectedPiece, selectedPosition, row, col));
