@@ -1,6 +1,6 @@
 import React from 'react';
 import ShipButton from '../containers/visibleShipButton.js';
-import PositionButton from './PositionButton.jsx';
+import PositionButton from '../containers/visiblePositionButton.js';
 
 const Footer = (props) => (
   <div class="footer">

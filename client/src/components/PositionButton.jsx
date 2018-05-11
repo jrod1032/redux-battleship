@@ -1,11 +1,13 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { selectPosition } from '../actions/index'
 
-const PositionButton = (props) => (
-  <button type="button" name={props.name} onClick={e => {
-    props.dispatch(selectPosition(e.target.name))
+const PositionButton = (props) => {
+  const selectionClass = props.selectedPosition && props.selectedPosition === props.name ? 'selected' : 'unselected';
+
+  return (
+  <button type="button" name={props.name} className={selectionClass} onClick={e => {
+    props.onButtonClick(e.target.name)
   }}>{props.name}</button>
   ) 
+}
 
-export default connect()(PositionButton);
+export default PositionButton;

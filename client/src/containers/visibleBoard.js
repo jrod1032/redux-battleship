@@ -31,7 +31,6 @@ const getVisibleBoard = (board, boardType) => {
 }
 
 const getCursorOnEnter = (gamePhase, selectedPiece, selectedPosition) => {
-  console.log('gamePhase', gamePhase)
   if (gamePhase === 'pregamePhase' && selectedPiece && selectedPosition) {
     document.getElementsByClassName('playerBoard')[0].style.cursor = 'copy'
   } else {
