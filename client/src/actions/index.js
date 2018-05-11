@@ -1,5 +1,14 @@
 import * as helpers from '../lib/index.js';
-import { gamePieces } from '../gameConstants.js'
+import { gamePieces } from '../gameConstants.js';
+import hit_ship from '../../dist/sounds/hit_ship.mp3';
+import splash from '../../dist/sounds/splash.mp3';
+import destroy_ship from '../../dist/sounds/destroy_ship.mp3';
+import add_piece from '../../dist/sounds/add_piece.mp3';
+
+const hitShipSound = new Audio(hit_ship)
+const splashSound = new Audio(splash)
+const destroyShipSound = new Audio(destroy_ship)
+const addPieceSound = new Audio(add_piece)
 
 export const ADD_SCORE = 'ADD_SCORE';
 export const ADD_SHIP = 'ADD_SHIP';
@@ -42,15 +51,19 @@ export const onCellClick = (row, col, boardType) => {
       dispatch(incrementShipCount())
       dispatch(addShip(selectedPiece, selectedPosition, row, col));
       dispatch(addShipToAlreadyChosenList(selectedPiece))
+      addPieceSound.play();
       if (playerShipCount === 4) {
         dispatch(changeGamePhase('battlePhase'))
         alert('Start Battle!');
       }
     } else if (gamePhase === 'battlePhase' && boardType === 'enemyBoard'){
       dispatch(destroyEnemySpot(row, col))
+      
       if (enemyBoard[row][col].piece !== 'E') {
+        dispatch(changeTurn(ENEMY_NAME))
         dispatch(onEnemySpotIsHit(enemyBoard[row][col], enemyFleet, enemyBoardHitCount))
       } else {
+        splashSound.play();
         dispatch(changeTurn(ENEMY_NAME))
         setTimeout(()=> dispatch(enemyTurn(playerBoard)), 2000);         
       }
@@ -76,16 +89,17 @@ const isShipIsDestroyed = (spot, fleets) => {
 export const onEnemySpotIsHit = (spot, enemyFleet, enemyBoardHitCount) => {
   return (dispatch, getState) => {
     if (isShipIsDestroyed(spot, enemyFleet)) {
-      console.log('DESTROYED!!!')
       dispatch(destroyShip(spot));
+      destroyShipSound.play();
       dispatch(incrementHitCount('enemyBoard'))
       if (enemyBoardHitCount === 4) {
         dispatch(changeGamePhase('endGame'));
       } else {
-        setTimeout(()=> dispatch(enemyTurn(getState().gameLogic.playerBoard)), 2000);                 
+        setTimeout(()=> dispatch(enemyTurn(getState().gameLogic.playerBoard)), 6000);                 
       }
     } else {
-      setTimeout(()=> dispatch(enemyTurn(getState().gameLogic.playerBoard)), 2000)
+      hitShipSound.play();
+      setTimeout(()=> dispatch(enemyTurn(getState().gameLogic.playerBoard)), 3000)
     }
   }
 }
@@ -96,6 +110,7 @@ export const enemyTurn = (playerBoard) => {
     dispatch(computerDestroysPlayerSpot(row, col));
     if (playerBoard[row][col].piece !== 'E') {
       dispatch(incrementHitCount('playerBoard'));
+      hitShipSound.play();
       if (getState().hitCounts.playerBoardHitCount === 17) {
         dispatch(changeGamePhase('endGame'))
       }

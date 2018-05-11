@@ -80,9 +80,14 @@ body {
 /* Component Specific Styling */
 
 .container > div {
-  border: solid;
+/*  border: none;*/
   border-color: black;
   border-width: 1px;
+}
+
+#gamePhase, #playerFleet, #enemyFleet {
+  border-bottom: solid;
+  border-color:  #10104d;
 }
 
 #gamePhaseTitle {
@@ -120,6 +125,7 @@ body {
   text-align: center;
   text-shadow: 3px 4px 10px rgba(150, 150, 150, 1);
   font-size: 24px;
+  border: solid;
   border-radius: 5%;
 }
 
