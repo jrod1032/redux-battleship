@@ -4,7 +4,6 @@ import * as helpers from '../lib/index.js';
 import { gamePieces } from '../gameConstants.js';
 
 const initialState = {
-  gamePhase: 'BeginGame',
   selectedPiece: null,
   selectedPosition: null,
   playerBoard: helpers.createBoard(),
@@ -27,26 +26,6 @@ const initialState = {
   enemyName: actions.ENEMY_NAME,
   turn: actions.PLAYER_NAME,
   alreadySelectedShips: []
-}
-
-function gamePhase (state = 'pregamePhase', action) {
-  switch(action.type) {
-    case actions.CHANGE_GAME_PHASE:
-      return action.phase;
-    default: return state;  
-  }
-}
-
-function shipsOnBoard(state = {playerShipCount: 0}, action) {
-  switch(action.type) {
-    case actions.INCREMENT_SHIP_COUNT:
-      let newCount = state.playerShipCount;
-      newCount++
-      return Object.assign({}, state, {
-        playerShipCount: newCount
-      })
-    default: return state;  
-  }
 }
 
 function gameLogic (state = initialState, action) {
@@ -121,6 +100,26 @@ function gameLogic (state = initialState, action) {
         turn: action.turn
       }) 
     default: return state  
+  }
+}
+
+function gamePhase (state = 'pregamePhase', action) {
+  switch(action.type) {
+    case actions.CHANGE_GAME_PHASE:
+      return action.phase;
+    default: return state;  
+  }
+}
+
+function shipsOnBoard(state = {playerShipCount: 0}, action) {
+  switch(action.type) {
+    case actions.INCREMENT_SHIP_COUNT:
+      let newCount = state.playerShipCount;
+      newCount++
+      return Object.assign({}, state, {
+        playerShipCount: newCount
+      })
+    default: return state;  
   }
 }
 
