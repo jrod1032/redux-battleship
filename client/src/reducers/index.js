@@ -103,6 +103,42 @@ function gameLogic (state = initialState, action) {
   }
 }
 
+const initialComputerMoveLogic = {
+  mode: 'hunt',
+  firstSpotHit: null,
+  lastSpotHit: null,
+  targetDirection: 'above',
+  didComputerHitLastTurn: false
+}
+
+function computerMoveLogic(state = initialComputerMoveLogic, action) {
+  switch (action.type) {
+    case actions.CHANGE_COMPUTER_MODE:
+      return Object.assign({}, state, {
+        mode: action.mode,
+      })
+    case actions.CHANGE_TARGET_DIRECTION:
+      return Object.assign({}, state, {
+        targetDirection: action.targetDirection
+      })
+    case actions.CHANGE_FIRST_SPOT_HIT:
+      return Object.assign({}, state, {
+        firstSpotHit: [action.row, action.col],
+        lastSpotHit: [action.row, action.col]
+      })  
+    case actions.CHANGE_LAST_SPOT_HIT:
+      return Object.assign({}, state, {
+        lastSpotHit: [action.row, action.col],
+        didComputerHitLastTurn: true
+      })  
+    case actions.CHANGE_HIT_LAST_TURN:
+      return Object.assign({}, state, {
+        didComputerHitLastTurn: action.hit
+      })  
+    default: return state;    
+  }
+}
+
 function gamePhase (state = 'pregamePhase', action) {
   switch(action.type) {
     case actions.CHANGE_GAME_PHASE:
@@ -140,7 +176,8 @@ const BattleshipApp = combineReducers({
   gameLogic,
   gamePhase,
   shipsOnBoard,
-  hitCounts
+  hitCounts,
+  computerMoveLogic
 });
 
 

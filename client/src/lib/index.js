@@ -94,6 +94,77 @@ export const checkIfRangeIsOccupied = function(row, column, spaces, position, bo
   return false;
 }
 
+export const decideWhichSpotToHit = (board, mode, firstSpotHit, lastSpotHit, direction, didComputerHitLastTurn) => {
+
+  const directions = ['above', 'right', 'below', 'left'];
+
+  let currentTargetDirection = direction;
+
+  if (mode === 'hunt') {
+    const { row, col } = destroyRandomSpotOnPlayerBoard(board);
+    return { row, col};
+  } else {
+    //target mode
+      let initialRow;
+      let initialColumn;
+      let row;
+      let col;
+
+      if (!didComputerHitLastTurn) {
+        initialRow = firstSpotHit[0];
+        initialColumn = firstSpotHit[1];
+      } else {
+        initialRow = lastSpotHit[0];
+        initialColumn = lastSpotHit[1];
+      }
+
+      let nextSpotIsInvalid = true;
+      
+      do {
+        let {newRow, newCol} = mapDirectionToNextSpot(currentTargetDirection, initialRow, initialColumn);
+        row = newRow;
+        col = newCol;
+
+        if (board[row] && board[row][col] && !board[row][col].hit) {
+          nextSpotIsInvalid = false;
+        } else {
+          currentTargetDirection = getNextTargetDirection(currentTargetDirection);
+        }
+      } while (nextSpotIsInvalid)
+
+      return { row, col, currentTargetDirection };
+  }
+
+}
+
+export const getNextTargetDirection  = (targetDirection) => {
+  const directions = ['above', 'right', 'below', 'left'];
+  const targetDirectionIndex = directions.indexOf(targetDirection);
+  return targetDirectionIndex === 3 ? directions[0] : directions[targetDirectionIndex + 1]
+} 
+
+const mapDirectionToNextSpot = (direction, row, col) => {
+  let newRow = row;
+  let newCol = col;
+
+  if (direction === 'above') {
+    newRow = row - 1;
+    newCol = col    
+  } else if (direction === 'right') {
+    newRow = row;
+    newCol = col + 1;
+  } else if (direction ==='below') {
+    newRow = row + 1
+    newCol = col
+  } else if (direction === 'left') {
+    newRow = row;
+    newCol = col - 1
+  } 
+  console.log('mapDirection row', newRow)
+  console.log('mapDirection col', newCol)
+  return { newRow, newCol }
+}
+
 export const destroyRandomSpotOnPlayerBoard = function(board) {
   let isSpaceOccupied = true;
   let row;
@@ -106,6 +177,16 @@ export const destroyRandomSpotOnPlayerBoard = function(board) {
     }
   }
   return { row, col }
+}
+
+export const isShipDestroyed = (spot, fleets) => {
+  const shipName = spot.piece;
+  for (let i = 0; i < fleets.length; i++) {
+    if (fleets[i][0] === shipName) {
+      return fleets[i][1] === fleets[i][2];
+    }
+  }
+  return;
 }
 
 export const getRandomNumber = function(min, max) {

@@ -1,5 +1,5 @@
 import * as helpers from '../lib/index.js';
-import { gamePieces } from '../gameConstants.js';
+import { gamePieces, targetDirectionList } from '../gameConstants.js';
 import hit_ship from '../../dist/sounds/hit_ship.mp3';
 import splash from '../../dist/sounds/splash.mp3';
 import destroy_ship from '../../dist/sounds/destroy_ship.mp3';
@@ -7,8 +7,13 @@ import add_piece from '../../dist/sounds/add_piece.mp3';
 
 export const ADD_SCORE = 'ADD_SCORE';
 export const ADD_SHIP = 'ADD_SHIP';
-export const ADD_SHIP_TO_ALREADY_CHOSEN_LIST = 'ADD_SHIP_TO_ALREADY_CHOSEN_LIST'
+export const ADD_SHIP_TO_ALREADY_CHOSEN_LIST = 'ADD_SHIP_TO_ALREADY_CHOSEN_LIST';
+export const CHANGE_COMPUTER_MODE = 'CHANGE_COMPUTER_MODE';
+export const CHANGE_FIRST_SPOT_HIT = 'CHANGE_FIRST_SPOT_HIT';
 export const CHANGE_GAME_PHASE = 'CHANGE_GAME_PHASE';
+export const CHANGE_HIT_LAST_TURN = 'CHANGE_HIT_LAST_TURN';
+export const CHANGE_LAST_SPOT_HIT = 'CHANGE_LAST_SPOT_HIT';
+export const CHANGE_TARGET_DIRECTION = 'CHANGE_TARGET_DIRECTION';
 export const CHANGE_TURN = 'CHANGE_TURN';
 export const CHOOSE_SHIP = 'CHOOSE_SHIP';
 export const COMPUTER_DESTROYS_PLAYER_SPOT = 'COMPUTER_DESTROYS_PLAYER_SPOT';
@@ -66,11 +71,11 @@ export const onCellClick = (row, col, boardType) => {
       if (enemyBoard[row][col].piece !== 'E') {
         dispatch(onSpotIsHit(enemyBoard[row][col], enemyFleet, enemyBoardHitCount))
         dispatch(changeTurn(ENEMY_NAME))
-        setTimeout(()=> dispatch(enemyTurn()), 5000);
+        setTimeout(()=> dispatch(enemyTurn()), 3000);
       } else {
         splashSound.play();
         dispatch(changeTurn(ENEMY_NAME))
-        setTimeout(()=> dispatch(enemyTurn(playerBoard)), 3000);         
+        setTimeout(()=> dispatch(enemyTurn(playerBoard)), 5000);         
       }
     } else if (gamePhase === 'pregamePhase' && boardType === 'enemyBoard') {
       alert('Not ready to destroy!')
@@ -85,32 +90,66 @@ const enemyTurn = () => {
   return (dispatch, getState) => {
     const state = getState();
     const { playerBoard, playerFleet } = state.gameLogic;
-    const{ playerBoardHitCount } = state.hitCounts;
-
-    let {row, col} = helpers.destroyRandomSpotOnPlayerBoard(playerBoard);
+    const { playerBoardHitCount } = state.hitCounts;
+    const { mode, targetDirection, firstSpotHit, lastSpotHit, didComputerHitLastTurn } = state.computerMoveLogic;
+    // let {row, col} = helpers.destroyRandomSpotOnPlayerBoard(playerBoard);
+    let { row, col, currentTargetDirection } = helpers.decideWhichSpotToHit(playerBoard, mode, firstSpotHit, lastSpotHit, targetDirection, didComputerHitLastTurn)
     dispatch(computerDestroysPlayerSpot(row, col));
     if (playerBoard[row][col].piece !== 'E') {
-      dispatch(onSpotIsHit(playerBoard[row][col], playerFleet, playerBoardHitCount))
-      dispatch(changeTurn(PLAYER_NAME))
+      //enemy hits ship on player board
+      if (mode === 'target') {
+        dispatch(onPlayerSpotIsHit(playerBoard[row][col], playerFleet, playerBoardHitCount))
+        dispatch(changeLastSpotHit(row, col));
+        dispatch(changeTargetDirection(currentTargetDirection))
+        dispatch(changeTurn(PLAYER_NAME))
+
+      } else {
+        dispatch(changeComputerMode('target'));
+        dispatch(changeFirstSpotHit(row, col));
+        dispatch(onPlayerSpotIsHit(playerBoard[row][col], playerFleet, playerBoardHitCount));
+        dispatch(changeTurn(PLAYER_NAME));
+      }
     } else {
       splashSound.play();
-      dispatch(changeTurn(PLAYER_NAME))
+      if (mode === 'target') {
+        dispatch(changeTargetDirection(helpers.getNextTargetDirection(targetDirection)))  
+        dispatch(changeHitLastTurn(false));
+      }
+      dispatch(changeTurn(PLAYER_NAME));
     }
   }
 }
 
 const onSpotIsHit = (spot, fleet, boardHitCount) => {
   return (dispatch, getState) => {
-    if (helpers.isShipIsDestroyed(spot, fleet)) {
+    if (helpers.isShipDestroyed(spot, fleet)) {
       dispatch(destroyShip(spot));
       destroyShipSound.play();
-      dispatch(incrementHitCount('enemyBoard'))
+      dispatch(incrementHitCount('enemyBoard'));
       // count is 4 because hit count has not dispatched yet
       if (boardHitCount === 4) {
         dispatch(changeGamePhase('endGame'));
       } 
+
     } else {
       hitShipSound.play();
+    }
+  }
+}
+
+const onPlayerSpotIsHit = (spot, fleet, boardHitCount) => {
+  return (dispatch, getState) => {
+    if (helpers.isShipDestroyed(spot, fleet)) {
+      dispatch(destroyShip(spot));
+      destroyShipSound.play();
+      dispatch(incrementHitCount('playerBoard'))
+      dispatch(changeComputerMode('hunt'));
+      if (boardHitCount === 4) {
+        dispatch(changeGamePhase('endGame'));
+      }
+    } else {
+      hitShipSound.play();
+      dispatch(changeHitLastTurn(true));
     }
   }
 }
@@ -128,7 +167,7 @@ export const addShip = (selectedShip, selectedPosition, row, col) => {
   }
 }
 
-export const addShipToAlreadyChosenList = selectedShip => {
+export const addShipToAlreadyChosenList = (selectedShip) => {
   return {
     type: ADD_SHIP_TO_ALREADY_CHOSEN_LIST,
     selectedShip
@@ -177,6 +216,43 @@ export const changeGamePhase = (phase) => {
     phase
   }
 }
+
+export const changeComputerMode = (mode) => {
+  return {
+    type: CHANGE_COMPUTER_MODE,
+    mode
+  }
+}
+
+export const changeTargetDirection = (targetDirection) => {
+  return {
+    type: CHANGE_TARGET_DIRECTION,
+    targetDirection
+  }
+}
+
+export const changeFirstSpotHit = (row, col) => {
+  return {
+    type: CHANGE_FIRST_SPOT_HIT,
+    row,
+    col
+  }
+}
+export const changeLastSpotHit = (row, col) => {
+  return {
+    type: CHANGE_LAST_SPOT_HIT,
+    row, 
+    col
+  }
+}
+
+export const changeHitLastTurn = (hit) => {
+  return {
+    type: CHANGE_HIT_LAST_TURN,
+    hit
+  }
+}
+
 
 export const destroyEnemySpot = (row, col) => {
   return {
