@@ -9,30 +9,35 @@ const Board = (props) => {
   <div className={props.className}
        onMouseEnter={props.getCursorOnEnter}>
     <table>
-      <tr className="boardOuter">
-        <th></th>
-        <th>1</th>
-        <th>2</th>
-        <th>3</th>
-        <th>4</th>
-        <th>5</th>
-        <th>6</th>
-        <th>7</th>
-        <th>8</th>
-        <th>9</th>
-        <th>10</th>
-      </tr> 
-      {board.map( (row, rowIdx) => {
-        return <tr> <th className="boardOuter">{rows[rowIdx]}</th>
-        {columns.map((col, colIdx) => {
-          return <td
-          className="boardCell"
-          onClick={ 
-            () => props.onCellClick(rowIdx, colIdx, props.boardType)}>
-          {board[rowIdx][colIdx]}
-          </td>
-        })}</tr>
-      })}   
+      <thead>
+        <tr className="boardOuter">
+          <th></th>
+          <th>1</th>
+          <th>2</th>
+          <th>3</th>
+          <th>4</th>
+          <th>5</th>
+          <th>6</th>
+          <th>7</th>
+          <th>8</th>
+          <th>9</th>
+          <th>10</th>
+        </tr> 
+      </thead>
+      <tbody>
+        {board.map( (row, rowIdx) => {
+          return <tr key={rowIdx}> <th className="boardOuter">{rows[rowIdx]}</th>
+          {columns.map((col, colIdx) => {
+            return <td
+            key={colIdx}
+            className="boardCell"
+            onClick={ 
+              () => props.onCellClick(rowIdx, colIdx, props.boardType)}>
+            {board[rowIdx][colIdx]}
+            </td>
+          })}</tr>
+        })}   
+      </tbody>
     </table>
   </div>
   )

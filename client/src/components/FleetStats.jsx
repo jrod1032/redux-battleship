@@ -9,8 +9,8 @@ const shipNameMap = {
 }
 
 const FleetStats = (props) => {
-  const enemyFleetStats = props.enemyFleet.map(ship => <li className="shipListItem">{shipNameMap[ship[0]]}</li>)
-  const playerFleetStats = props.playerFleet.map(ship => <li className="shipListItem">{shipNameMap[ship[0]]}</li>)
+  const enemyFleetStats = props.enemyFleet.map( (ship, index) => <li key={index} className="shipListItem">{shipNameMap[ship[0]]}</li>)
+  const playerFleetStats = props.playerFleet.map( (ship, index) => <li key={index} className="shipListItem">{shipNameMap[ship[0]]}</li>)
   return (
   <div id={props.fleet}>
     <div className="shipStatsHeader">Ships Remaining</div>

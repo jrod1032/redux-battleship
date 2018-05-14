@@ -7,7 +7,7 @@ import VisiblePlayerName from '../containers/VisiblePlayerName';
 import VisibleEnemyName from '../containers/VisibleEnemyName';
 
 const BattleshipGame = () => (
-    <div class="container">
+    <div className="container">
       <FleetStats fleet="playerFleet"/>
       <GamePhaseContainer /> 
       <FleetStats fleet="enemyFleet"/>

@@ -3,7 +3,7 @@ import ShipButton from '../containers/visibleShipButton.js';
 import PositionButton from '../containers/visiblePositionButton.js';
 
 const Footer = (props) => (
-  <div class="footer">
+  <div className="footer">
     <ShipButton name="ACC" displayName="AirCraft Carrier" />
     <ShipButton name="BS" displayName="Battleship" />
     <ShipButton name="C" displayName="Cruiser" />

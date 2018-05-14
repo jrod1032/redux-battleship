@@ -71,11 +71,11 @@ export const onCellClick = (row, col, boardType) => {
       if (enemyBoard[row][col].piece !== 'E') {
         dispatch(onSpotIsHit(enemyBoard[row][col], enemyFleet, enemyBoardHitCount))
         dispatch(changeTurn(ENEMY_NAME))
-        setTimeout(()=> dispatch(enemyTurn()), 3000);
+        setTimeout(()=> dispatch(enemyTurn()), 5000);
       } else {
         splashSound.play();
         dispatch(changeTurn(ENEMY_NAME))
-        setTimeout(()=> dispatch(enemyTurn(playerBoard)), 5000);         
+        setTimeout(()=> dispatch(enemyTurn(playerBoard)), 3000);         
       }
     } else if (gamePhase === 'pregamePhase' && boardType === 'enemyBoard') {
       alert('Not ready to destroy!')
@@ -89,11 +89,14 @@ export const onCellClick = (row, col, boardType) => {
 const enemyTurn = () => {
   return (dispatch, getState) => {
     const state = getState();
+
+    if (state.gamePhase === 'endGame') {return ;}
+
     const { playerBoard, playerFleet } = state.gameLogic;
     const { playerBoardHitCount } = state.hitCounts;
     const { mode, targetDirection, firstSpotHit, lastSpotHit, didComputerHitLastTurn } = state.computerMoveLogic;
-    // let {row, col} = helpers.destroyRandomSpotOnPlayerBoard(playerBoard);
-    let { row, col, currentTargetDirection } = helpers.decideWhichSpotToHit(playerBoard, mode, firstSpotHit, lastSpotHit, targetDirection, didComputerHitLastTurn)
+    
+    const { row, col, currentTargetDirection } = helpers.decideWhichSpotToHit(playerBoard, mode, firstSpotHit, lastSpotHit, targetDirection, didComputerHitLastTurn)
     dispatch(computerDestroysPlayerSpot(row, col));
     if (playerBoard[row][col].piece !== 'E') {
       //enemy hits ship on player board
@@ -123,7 +126,7 @@ const enemyTurn = () => {
 const onSpotIsHit = (spot, fleet, boardHitCount) => {
   return (dispatch, getState) => {
     if (helpers.isShipDestroyed(spot, fleet)) {
-      dispatch(destroyShip(spot));
+      dispatch(destroyShip(spot, 'enemyBoard'));
       destroyShipSound.play();
       dispatch(incrementHitCount('enemyBoard'));
       // count is 4 because hit count has not dispatched yet
@@ -140,7 +143,7 @@ const onSpotIsHit = (spot, fleet, boardHitCount) => {
 const onPlayerSpotIsHit = (spot, fleet, boardHitCount) => {
   return (dispatch, getState) => {
     if (helpers.isShipDestroyed(spot, fleet)) {
-      dispatch(destroyShip(spot));
+      dispatch(destroyShip(spot, 'playerBoard'));
       destroyShipSound.play();
       dispatch(incrementHitCount('playerBoard'))
       dispatch(changeComputerMode('hunt'));
@@ -262,10 +265,11 @@ export const destroyEnemySpot = (row, col) => {
   }
 }
 
-export const destroyShip = (ship) => {
+export const destroyShip = (ship, board) => {
   return {
     type: DESTROY_SHIP,
-    ship: ship
+    ship: ship,
+    board: board
   }
 }
 
