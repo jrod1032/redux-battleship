@@ -48,7 +48,7 @@ function gameLogic (state = initialState, action) {
       })  
     case actions.DESTROY_SPOT:
       return Object.assign({}, state, {
-        enemyBoard: state.enemyBoard.map((row, rowIdx) => {
+        [action.board]: state[action.board].map((row, rowIdx) => {
           return row.map((spot, colIdx) => {
             if (rowIdx === action.row && colIdx === action.col) {
               return Object.assign({}, spot, {hit: true})
@@ -56,8 +56,8 @@ function gameLogic (state = initialState, action) {
             return spot;
           })
         }),
-        enemyFleet: state.enemyFleet.map( shipHitCount => {
-          let spotName = state.enemyBoard[action.row][action.col].piece;
+        [action.fleet]: state[action.fleet].map( shipHitCount => {
+          let spotName = state[action.board][action.row][action.col].piece;
           if (spotName === shipHitCount[0])  {
             shipHitCount[1]++;
             return shipHitCount

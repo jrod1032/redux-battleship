@@ -16,7 +16,6 @@ export const CHANGE_LAST_SPOT_HIT = 'CHANGE_LAST_SPOT_HIT';
 export const CHANGE_TARGET_DIRECTION = 'CHANGE_TARGET_DIRECTION';
 export const CHANGE_TURN = 'CHANGE_TURN';
 export const CHOOSE_SHIP = 'CHOOSE_SHIP';
-export const COMPUTER_DESTROYS_PLAYER_SPOT = 'COMPUTER_DESTROYS_PLAYER_SPOT';
 export const DESTROY_SPOT = 'DESTROY_SPOT';
 export const DESTROY_SHIP = 'DESTROY_SHIP';
 export const INCREMENT_HIT_COUNT = 'INCREMENT_HIT_COUNT';
@@ -66,7 +65,7 @@ export const onCellClick = (row, col, boardType) => {
         alert('Start Battle!');
       }
     } else if (gamePhase === 'battlePhase' && boardType === 'enemyBoard'){
-      dispatch(destroyEnemySpot(row, col))
+      dispatch(destroyEnemySpot(row, col, 'enemyBoard', 'enemyFleet'))
       
       if (enemyBoard[row][col].piece !== 'E') {
         dispatch(onSpotIsHit(enemyBoard[row][col], enemyFleet, enemyBoardHitCount))
@@ -97,7 +96,7 @@ const enemyTurn = () => {
     const { mode, targetDirection, firstSpotHit, lastSpotHit, didComputerHitLastTurn } = state.computerMoveLogic;
     
     const { row, col, currentTargetDirection } = helpers.decideWhichSpotToHit(playerBoard, mode, firstSpotHit, lastSpotHit, targetDirection, didComputerHitLastTurn)
-    dispatch(computerDestroysPlayerSpot(row, col));
+    dispatch(destroyEnemySpot(row, col, 'playerBoard', 'playerFleet'))
     if (playerBoard[row][col].piece !== 'E') {
       //enemy hits ship on player board
       if (mode === 'target') {
@@ -257,11 +256,13 @@ export const changeHitLastTurn = (hit) => {
 }
 
 
-export const destroyEnemySpot = (row, col) => {
+export const destroyEnemySpot = (row, col, board, fleet) => {
   return {
     type: DESTROY_SPOT,
     row,
-    col
+    col,
+    board,
+    fleet
   }
 }
 
@@ -270,14 +271,5 @@ export const destroyShip = (ship, board) => {
     type: DESTROY_SHIP,
     ship: ship,
     board: board
-  }
-}
-
-export const computerDestroysPlayerSpot = (row, col) => {
- // let {row, col} = helpers.destroyRandomSpotOnPlayerBoard(playerBoard);
-  return {
-    type: COMPUTER_DESTROYS_PLAYER_SPOT,
-    row,
-    col
   }
 }
