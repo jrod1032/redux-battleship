@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import Board from '../components/Board.jsx';
-import { onCellClick } from '../actions/index.js';
+import { pregameBoardClick, battlePhaseBoardClick, battlePhaseOwnBoardClick, pregameEnemyBoardClick } from '../actions/index.js';
 import { createSelector } from 'reselect';
 
 const visiblePlayerBoard = (state) => state.gameLogic.playerBoard;
@@ -50,9 +50,6 @@ const getEnemyBoard = createSelector(
 const getCursorOnEnter = createSelector(
   [getGamePhase, getSelectedPiece, getSelectedPosition],
   (gamePhase, selectedPiece, selectedPosition) => {
-    console.log('phase', gamePhase);
-    console.log('piece', selectedPiece);
-    console.log('pos', selectedPosition);
     if (gamePhase === 'pregamePhase' && selectedPiece && selectedPosition) {
       document.getElementsByClassName('playerBoard')[0].style.cursor = 'copy'
     } else {
@@ -74,9 +71,20 @@ const mapStateToProps = state => {
   }
 }
 
+
 const mapDispatchToProps = dispatch => {
   return {
-    onCellClick: (row, col, boardType) => dispatch(onCellClick(row, col, boardType) )
+    onCellClick: (row, col, boardType, gamePhase) => {
+      if (gamePhase === 'pregamePhase' && boardType === 'playerBoard') {
+        dispatch(pregameBoardClick(row, col)) 
+      } else if (gamePhase === 'battlePhase' && boardType === 'enemyBoard') {
+        dispatch(battlePhaseBoardClick(row, col))
+      } else if (gamePhase === 'battlePhase' && boardType === 'playerBoard') {
+        dispatch(battlePhaseOwnBoardClick())
+      } else if (gamePhase === 'pregamePhase' && boardType === 'enemyBoard') {
+        dispatch(pregameEnemyBoardClick())
+      }      
+    }
   }
 }
 

@@ -35,53 +35,69 @@ const addPieceSound = new Audio(add_piece)
 
 //Thunks
 
-export const onCellClick = (row, col, boardType) => {
+export const pregameBoardClick = (row, col) => {
   return (dispatch, getState) => {
     const state = getState();
-    const gamePhase = state.gamePhase;
-    const { selectedPiece, selectedPosition, playerBoard, enemyBoard, alreadySelectedShips, enemyFleet} = state.gameLogic
-    const { playerBoardHitCount, enemyBoardHitCount }  = state.hitCounts;
+    const { selectedPiece, selectedPosition, playerBoard, enemyBoard, alreadySelectedShips, enemyFleet } = state.gameLogic;
     const { playerShipCount } = state.shipsOnBoard;
 
-    if (gamePhase === 'pregamePhase' && boardType === 'playerBoard') {
-      //check invalid user actions
-      if (!selectedPiece || !selectedPosition) {
-        alert('Please select a ship and position');
-        return;
-      } else if (alreadySelectedShips.indexOf(selectedPiece) > -1) {
-        alert(`You have already chosen the ${selectedPiece}. Please choose another`)
-        return;
-      } else if (!helpers.checkIfRangeIsValid(row, col, gamePieces[selectedPiece], selectedPosition, playerBoard)) {
-        alert('Invalid spot!');
-        return;
-      }    
-
-      dispatch(incrementShipCount())
-      dispatch(addShip(selectedPiece, selectedPosition, row, col));
-      dispatch(addShipToAlreadyChosenList(selectedPiece))
-      addPieceSound.play();
-      if (playerShipCount === 4) {
-        dispatch(changeGamePhase('battlePhase'))
-        alert('Start Battle!');
-      }
-    } else if (gamePhase === 'battlePhase' && boardType === 'enemyBoard'){
-      dispatch(destroyEnemySpot(row, col, 'enemyBoard', 'enemyFleet'))
-      
-      if (enemyBoard[row][col].piece !== 'E') {
-        dispatch(onSpotIsHit(enemyBoard[row][col], enemyFleet, enemyBoardHitCount))
-        dispatch(changeTurn(ENEMY_NAME))
-        setTimeout(()=> dispatch(enemyTurn()), 5000);
-      } else {
-        splashSound.play();
-        dispatch(changeTurn(ENEMY_NAME))
-        setTimeout(()=> dispatch(enemyTurn(playerBoard)), 3000);         
-      }
-    } else if (gamePhase === 'pregamePhase' && boardType === 'enemyBoard') {
-      alert('Not ready to destroy!')
-    } else {
-      alert('Dont destroy your own ships!')
+    if (!selectedPiece || !selectedPosition) {
+      alert('Please select a ship and position');
+      return;
+    } else if (alreadySelectedShips.indexOf(selectedPiece) > -1) {
+      alert(`You have already chosen the ${selectedPiece}. Please choose another`)
+      return;
+    } else if (!helpers.checkIfRangeIsValid(row, col, gamePieces[selectedPiece], selectedPosition, playerBoard)) {
+      alert('Invalid spot!');
+      return;
     }
 
+    dispatch(incrementShipCount());
+    dispatch(addShip(selectedPiece, selectedPosition, row, col));
+    dispatch(addShipToAlreadyChosenList(selectedPiece));
+    addPieceSound.play();
+
+    if (playerShipCount === 4) {
+      dispatch(changeGamePhase('battlePhase'))
+      alert('Start Battle!');
+    }
+  }
+}
+
+export const battlePhaseBoardClick = (row, col) => {
+  return (dispatch, getState) => {
+    const state = getState();
+    const { enemyBoard, enemyFleet, turn } = state.gameLogic
+    const { enemyBoardHitCount }  = state.hitCounts;
+
+    if (turn !== 'Player') {
+      alert('Wait your turn!');
+      return;
+    }
+
+    dispatch(destroyEnemySpot(row, col, 'enemyBoard', 'enemyFleet'))
+
+    if (enemyBoard[row][col].piece !== 'E') {
+      dispatch(onSpotIsHit(enemyBoard[row][col], enemyFleet, enemyBoardHitCount))
+      dispatch(changeTurn(ENEMY_NAME))
+      setTimeout(()=> dispatch(enemyTurn()), 5000);
+    } else {
+      splashSound.play();
+      dispatch(changeTurn(ENEMY_NAME))
+      setTimeout(()=> dispatch(enemyTurn()), 3000);         
+    }
+  }
+}
+
+export const battlePhaseOwnBoardClick = () => {
+  return (dispatch, getState) => {
+    alert(`Don't destroy your own ships!`);
+  }
+}
+
+export const pregameEnemyBoardClick = () => {
+  return (dispatch, getState) => {
+    alert('Not ready to destroy!');
   }
 }
 

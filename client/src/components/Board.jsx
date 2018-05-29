@@ -32,7 +32,7 @@ const Board = (props) => {
             key={colIdx}
             className="boardCell"
             onClick={ 
-              () => props.onCellClick(rowIdx, colIdx, props.boardType)}>
+              () => props.onCellClick(rowIdx, colIdx, props.boardType, props.gamePhase)}>
             {board[rowIdx][colIdx]}
             </td>
           })}</tr>
