@@ -119,7 +119,7 @@ export const decideWhichSpotToHit = (board, mode, firstSpotHit, lastSpotHit, dir
       }
 
       let nextSpotIsInvalid = true;
-      
+      let loopCount = 0;
       do {
         let {newRow, newCol} = mapDirectionToNextSpot(currentTargetDirection, initialRow, initialColumn);
         row = newRow;
@@ -129,6 +129,11 @@ export const decideWhichSpotToHit = (board, mode, firstSpotHit, lastSpotHit, dir
           nextSpotIsInvalid = false;
         } else {
           currentTargetDirection = getNextTargetDirection(currentTargetDirection);
+          loopCount++;
+          if (loopCount > 4) {
+            initialRow = firstSpotHit[0];
+            initialColumn = firstSpotHit[1];
+          }
         }
       } while (nextSpotIsInvalid)
 
@@ -142,6 +147,17 @@ export const getNextTargetDirection  = (targetDirection) => {
   const targetDirectionIndex = directions.indexOf(targetDirection);
   return targetDirectionIndex === 3 ? directions[0] : directions[targetDirectionIndex + 1]
 } 
+
+export const getOppositeTargetDirection = (targetDirection) => {
+  const directions = {
+    above: 'below',
+    left: 'right',
+    below: 'above',
+    right: 'left'
+  }
+
+  return directions[targetDirection];
+}
 
 const mapDirectionToNextSpot = (direction, row, col) => {
   let newRow = row;
