@@ -1,3 +1,4 @@
+import { batchActions } from 'redux-batched-actions';
 import * as helpers from '../lib/index.js';
 import { gamePieces, targetDirectionList } from '../gameConstants.js';
 import hit_ship from '../../dist/sounds/hit_ship.mp3';
@@ -14,6 +15,7 @@ export const CHANGE_GAME_PHASE = 'CHANGE_GAME_PHASE';
 export const CHANGE_HIT_LAST_TURN = 'CHANGE_HIT_LAST_TURN';
 export const CHANGE_LAST_SPOT_HIT = 'CHANGE_LAST_SPOT_HIT';
 export const CHANGE_TARGET_DIRECTION = 'CHANGE_TARGET_DIRECTION';
+export const CHANGE_TARGET_SHIP_HIT_COUNT = 'CHANGE_TARGET_SHIP_HIT_COUNT';
 export const CHANGE_TURN = 'CHANGE_TURN';
 export const CHOOSE_SHIP = 'CHOOSE_SHIP';
 export const DESTROY_SPOT = 'DESTROY_SPOT';
@@ -51,11 +53,15 @@ export const pregameBoardClick = (row, col) => {
       alert('Invalid spot!');
       return;
     }
-
-    dispatch(incrementShipCount());
-    dispatch(addShip(selectedPiece, selectedPosition, row, col));
-    dispatch(addShipToAlreadyChosenList(selectedPiece));
     addPieceSound.play();
+    dispatch(batchActions([
+      incrementShipCount(),
+      addShip(selectedPiece, selectedPosition, row, col),
+      addShipToAlreadyChosenList(selectedPiece)
+      ]))
+    // dispatch(incrementShipCount());
+    // dispatch(addShip(selectedPiece, selectedPosition, row, col));
+    // dispatch(addShipToAlreadyChosenList(selectedPiece));
 
     if (playerShipCount === 4) {
       dispatch(changeGamePhase('battlePhase'))
@@ -109,29 +115,59 @@ const enemyTurn = () => {
 
     const { playerBoard, playerFleet } = state.gameLogic;
     const { playerBoardHitCount } = state.hitCounts;
-    const { mode, targetDirection, firstSpotHit, lastSpotHit, didComputerHitLastTurn } = state.computerMoveLogic;
+    const { mode, targetDirection, firstSpotHit, lastSpotHit, didComputerHitLastTurn, targetShipHitCount } = state.computerMoveLogic;
     
     const { row, col, currentTargetDirection } = helpers.decideWhichSpotToHit(playerBoard, mode, firstSpotHit, lastSpotHit, targetDirection, didComputerHitLastTurn)
     dispatch(destroyEnemySpot(row, col, 'playerBoard', 'playerFleet'))
     if (playerBoard[row][col].piece !== 'E') {
       //enemy hits ship on player board
       if (mode === 'target') {
+        dispatch(batchActions([
+          changeTargetShipHitCount(targetShipHitCount + 1),
+          changeLastSpotHit(row, col),
+          changeTargetDirection(currentTargetDirection),
+          changeTurn(PLAYER_NAME)
+          ]))
         dispatch(onPlayerSpotIsHit(playerBoard[row][col], playerFleet, playerBoardHitCount))
-        dispatch(changeLastSpotHit(row, col));
-        dispatch(changeTargetDirection(currentTargetDirection))
-        dispatch(changeTurn(PLAYER_NAME))
+
+        // dispatch(changeTargetHitCount(targetShipHitCount + 1))
+        // dispatch(onPlayerSpotIsHit(playerBoard[row][col], playerFleet, playerBoardHitCount))
+        // dispatch(changeLastSpotHit(row, col));
+        // dispatch(changeTargetDirection(currentTargetDirection))
+        // dispatch(changeTurn(PLAYER_NAME))
 
       } else {
-        dispatch(changeComputerMode('target'));
-        dispatch(changeFirstSpotHit(row, col));
-        dispatch(onPlayerSpotIsHit(playerBoard[row][col], playerFleet, playerBoardHitCount));
-        dispatch(changeTurn(PLAYER_NAME));
+        dispatch(batchActions([
+          changeComputerMode('target'),
+          changeTargetShipHitCount(targetShipHitCount + 1),
+          changeFirstSpotHit(row, col),
+          changeTurn(PLAYER_NAME)
+          ]))
+          dispatch(onPlayerSpotIsHit(playerBoard[row][col], playerFleet, playerBoardHitCount))
+
+        // dispatch(changeComputerMode('target'));
+        // dispatch(changeTargetHitCount(targetShipHitCount + 1))
+        // dispatch(changeFirstSpotHit(row, col));
+        // dispatch(onPlayerSpotIsHit(playerBoard[row][col], playerFleet, playerBoardHitCount));
+        // dispatch(changeTurn(PLAYER_NAME));
       }
     } else {
       splashSound.play();
       if (mode === 'target') {
-        dispatch(changeTargetDirection(helpers.getNextTargetDirection(targetDirection)))  
-        dispatch(changeHitLastTurn(false));
+        if (targetShipHitCount > 1) {
+          console.log('Going oppo');
+          dispatch(batchActions([
+            changeTargetDirection(helpers.getOppositeTargetDirection(targetDirection)),
+            changeHitLastTurn(false)
+            ]))
+          // dispatch(changeTargetDirection(helpers.getOppositeTargetDirection(targetDirection)))
+        } else {
+          dispatch(batchActions([
+            changeTargetDirection(helpers.getNextTargetDirection(targetDirection)),
+            changeHitLastTurn(false)
+            ]))
+          // dispatch(changeTargetDirection(helpers.getNextTargetDirection(targetDirection)))  
+        }
       }
       dispatch(changeTurn(PLAYER_NAME));
     }
@@ -141,9 +177,13 @@ const enemyTurn = () => {
 const onSpotIsHit = (spot, fleet, boardHitCount) => {
   return (dispatch, getState) => {
     if (helpers.isShipDestroyed(spot, fleet)) {
-      dispatch(destroyShip(spot, 'enemyBoard'));
       destroyShipSound.play();
-      dispatch(incrementHitCount('enemyBoard'));
+      dispatch(batchActions([
+        destroyShip(spot, 'enemyBoard'),
+        incrementHitCount('enemyBoard')
+        ]))
+      // dispatch(destroyShip(spot, 'enemyBoard'));
+      // dispatch(incrementHitCount('enemyBoard'));
       // count is 4 because hit count has not dispatched yet
       if (boardHitCount === 4) {
         dispatch(changeGamePhase('endGame'));
@@ -158,10 +198,17 @@ const onSpotIsHit = (spot, fleet, boardHitCount) => {
 const onPlayerSpotIsHit = (spot, fleet, boardHitCount) => {
   return (dispatch, getState) => {
     if (helpers.isShipDestroyed(spot, fleet)) {
-      dispatch(destroyShip(spot, 'playerBoard'));
       destroyShipSound.play();
-      dispatch(incrementHitCount('playerBoard'))
-      dispatch(changeComputerMode('hunt'));
+      dispatch(batchActions([
+        destroyShip(spot, 'playerBoard'),
+        incrementHitCount('playerBoard'),
+        changeComputerMode('hunt'),
+        changeTargetShipHitCount(0)
+        ]))
+      // dispatch(destroyShip(spot, 'playerBoard'));
+      // dispatch(incrementHitCount('playerBoard'))
+      // dispatch(changeComputerMode('hunt'));
+      // dispatch(changeTargetShipHitCount(0))
       if (boardHitCount === 4) {
         dispatch(changeGamePhase('endGame'));
       }
@@ -173,6 +220,12 @@ const onPlayerSpotIsHit = (spot, fleet, boardHitCount) => {
 }
 
 //Action creators
+export const changeTargetShipHitCount = (hits) => {
+return {
+    type: CHANGE_TARGET_SHIP_HIT_COUNT,
+    hits
+  }
+}
 
 export const addShip = (selectedShip, selectedPosition, row, col) => {
   if (!selectedShip || !selectedPosition) return;

@@ -108,7 +108,8 @@ const initialComputerMoveLogic = {
   firstSpotHit: null,
   lastSpotHit: null,
   targetDirection: 'above',
-  didComputerHitLastTurn: false
+  didComputerHitLastTurn: false,
+  targetShipHitCount: 0
 }
 
 function computerMoveLogic(state = initialComputerMoveLogic, action) {
@@ -134,6 +135,10 @@ function computerMoveLogic(state = initialComputerMoveLogic, action) {
     case actions.CHANGE_HIT_LAST_TURN:
       return Object.assign({}, state, {
         didComputerHitLastTurn: action.hit
+      })  
+    case actions.CHANGE_TARGET_SHIP_HIT_COUNT:
+      return Object.assign({}, state, {
+        targetShipHitCount: action.hits
       })  
     default: return state;    
   }
