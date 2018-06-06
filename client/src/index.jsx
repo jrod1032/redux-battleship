@@ -1,13 +1,14 @@
 import { createStore, applyMiddleware } from 'redux';
+import { enableBatching } from 'redux-batched-actions';
 import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import BattleshipGame from './components/BattleshipGame.jsx';
-import BattleshipApp from './reducers/index.js'
+import BattleshipApp from './reducers/index.js';
 
 const store = createStore(
-  BattleshipApp,
+  enableBatching(BattleshipApp),
   applyMiddleware(thunk)
   );
 
