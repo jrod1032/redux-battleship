@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 const shipNameMap = {
   ACC: 'AirCraft Carrier',
@@ -9,15 +10,19 @@ const shipNameMap = {
 }
 
 const FleetStats = (props) => {
-  const enemyFleetStats = props.enemyFleet.map( (ship, index) => <li key={index} className="shipListItem">{shipNameMap[ship[0]]}</li>)
-  const playerFleetStats = props.playerFleet.map( (ship, index) => <li key={index} className="shipListItem">{shipNameMap[ship[0]]}</li>)
+  const fleet = props.fleet === 'playerFleet' ? props.playerFleet : props.enemyFleet
   return (
   <div id={props.fleet}>
     <div className="shipStatsHeader">Ships Remaining</div>
     <ul className="shipList">
-      {props.fleet === 'enemyFleet' ? enemyFleetStats : playerFleetStats}
+      {fleet.map( (ship, index) => <li key={index} className="shipListItem">{shipNameMap[ship[0]]}</li>)}
     </ul>
   </div>
 )}
 
+FleetStats.PropTypes = {
+  enemyFleet: PropTypes.arrayOf(PropTypes.array.isRequired).isRequired,
+  playerFleet: PropTypes.arrayOf(PropTypes.array.isRequired).isRequired,
+  fleet: PropTypes.string.isRequired
+}
 export default FleetStats;

@@ -1,14 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 const ShipButton = (props) => {
-
-  //   let buttonStyles = {
-  //   'borderColor': 'black',
-  //   'borderRadius': '10%',
-  //   'marginLeft': '10px',
-  //   'padding': '2px'
-  // }
-
   const selectionClass = props.selectedPiece && props.selectedPiece === props.name ? 'selected' : 'unselected';
 
   return ( 
@@ -18,5 +11,11 @@ const ShipButton = (props) => {
   ) 
 }
 
+ShipButton.PropTypes = {
+  selectedPiece: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  displayName: PropTypes.string.isRequired,
+  onButtonClick: PropTypes.func.isRequired
+}
 
 export default ShipButton;

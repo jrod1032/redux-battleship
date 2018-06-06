@@ -1,5 +1,6 @@
 import React from 'react';
-;
+import PropTypes from 'prop-types';
+
 const rows = ['A','B','C','D','E','F','G','H','I','J']
 const columns = [1,2,3,4,5,6,7,8,9,10];
 
@@ -11,17 +12,8 @@ const Board = (props) => {
     <table>
       <thead>
         <tr className="boardOuter">
-          <th></th>
-          <th>1</th>
-          <th>2</th>
-          <th>3</th>
-          <th>4</th>
-          <th>5</th>
-          <th>6</th>
-          <th>7</th>
-          <th>8</th>
-          <th>9</th>
-          <th>10</th>
+        <th></th>
+        {columns.map(column=> <th key={column}>{column}</th>)}
         </tr> 
       </thead>
       <tbody>
@@ -41,6 +33,16 @@ const Board = (props) => {
     </table>
   </div>
   )
+}
+
+Board.PropTypes = {
+  boardType: PropTypes.string.isRequired,
+  playerBoard: PropTypes.arrayOf(PropTypes.array.isRequired).isRequired,
+  enemyBoard: PropTypes.arrayOf(PropTypes.array.isRequired).isRequired,
+  selectedPiece: PropTypes.string,
+  selectedPos: PropTypes.string,
+  getCursorOnEnter:PropTypes.func.isRequired,
+  OnCellClick: PropTypes.func.isRequired
 }
 
 export default Board;
